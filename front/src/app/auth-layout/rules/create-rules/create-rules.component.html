@@ -1,0 +1,191 @@
+<div class="all">
+  <div class="form">
+    <form [formGroup]="ruleForm" (ngSubmit)="onSubmit()">
+      <div class="form-field">
+        <input placeholder="Наименование правила" class="form-control" type="text" id="ruleName" formControlName="ruleName">
+      </div>
+      <div class="form-field">
+        <textarea placeholder="Описание" class="form-control" type="text" id="ruleDescription" formControlName="ruleDescription"></textarea>
+      </div>
+      <div class="rule-form-wrapper">
+        <div style="display: flex">
+          <span class="material-symbols-outlined">person</span><p style="margin-top: 1px; margin-left: 5px"> Пользователь</p>
+        </div>
+        <div class="form-field">
+          <select class="form-control form-select" id="subjAttributeStaticList" #subjAttributeStatic formControlName="subjAttributeStatic">
+            <option [value]="null" disabled selected >Выбрать атрибут</option>
+            <option *ngFor="let attrName of subjAttributeNames">{{attrName.name}}</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <select class="form-control form-select" id="subjAttributeValueStaticList" #subjValueStatic formControlName="subjValueStatic">
+            <option [value]="null" disabled selected >Выбрать значение</option>
+            <option *ngFor="let attrName of subjAttributeValues[0]">{{attrName.value}}</option>
+          </select>
+        </div>
+        <mat-expansion-panel
+          class="mat-elevation-z0"
+          *ngIf="user.controls.length > 0"
+          [expanded]="userOpenState === true"
+          (opened)="userOpenState = true"
+          (closed)="userOpenState = false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ userOpenState ? 'Скрыть панель' : 'Раскрыть панель'}}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div [formGroup]="ruleForm">
+            <ng-container formArrayName="user">
+              <div *ngFor="let user of user.controls; let i = index" class="subSubject">
+                <div [formGroupName]="i">
+                  <div class="form-field">
+                    <div style="display: flex">
+                      <select class="form-control form-select" name="subjAttribute" (change)="listener($event, i);" [id]="'subjAttribute' + i" #subjAttribute formControlName="subjAttribute">
+                        <option [value]="null" disabled selected >Выбрать атрибут</option>
+                        <option *ngFor="let attrName of subjAttributeNames">{{attrName.name}}</option>
+                      </select>
+                      <span class="material-symbols-outlined" (click)="deleteUser(i)">delete</span>
+                    </div>
+                  </div>
+                  <div class="form-field">
+                    <select class="form-control form-select" [id]="'subjValue' + i" (change)="listener($event, i)" formControlName="subjValue">
+                      <option>Выбрать значение</option>
+                      <option *ngFor="let attrName of subjAttributeValues[i + 1]">{{attrName.value}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </mat-expansion-panel>
+        <div class="form-button-field">
+          <button mat-stroked-button class="form-button" id="addUserFrame" (click)="addUser(); $event.preventDefault(); $event.stopPropagation(); this.userOpenState = true">Добавить атрибут</button>
+        </div>
+      </div>
+      <div class="rule-form-wrapper">
+        <div style="display: flex">
+          <span class="material-symbols-outlined">humidity_mid</span><p style="margin-top: 1px; margin-left: 5px">Ресурс</p>
+        </div>
+        <div class="form-field">
+          <select class="form-control form-select" id="microserviceStatic" #microserviceStatic formControlName="microserviceStatic">
+            <option [value]="null" disabled selected >Выбрать микросервис</option>
+            <option *ngFor="let microservice of microservices[0]" [value]="microservice.uid">{{microservice.name}}</option>
+            <!-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww -->
+          </select>
+        </div>
+        <div class="form-field">
+          <select class="form-control form-select" id="resourceNameStaticList" #resourceNameStatic formControlName="resourceNameStatic">
+            <option [value]="null" disabled selected >Выбрать ресурс</option>
+
+            <option *ngFor="let resource of resources[0]" [value]="resource.uid" [title]="resource.description">{{resource.alias}}</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <select class="form-control form-select" id="attributeStatic" formControlName="attributeStatic">
+            <option [value]="null" disabled selected >Выбрать атрибут</option>
+            <option *ngFor="let attribute of attributes[0]" [value]="attribute.name">{{attribute.alias}}</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <select class="form-control form-select" id="operatorStatic" formControlName="operatorStatic">
+            <option value="Равно">Равно</option>
+            <option value="Не равно">Не равно</option>
+            <option value="Содержит">Содержит</option>
+            <option value="Не содержит">Не содержит</option>
+            <option value="Начинается с">Начинается с</option>
+            <option value="Не начинается с">Не начинается с</option>
+            <option value="Заканчивается на">Заканчивается на</option>
+            <option value="Равно">Не заканчивается на</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <input placeholder="Значение" class="form-control" type="text" name="resourceValueStatic" id="resourceValueStatic" formControlName="resourceValueStatic" #resourceValueStatic>
+        </div>
+        <mat-expansion-panel
+          class="mat-elevation-z0"
+          *ngIf="resourceFrameCount.length > 0"
+          [expanded]="resourceOpenState === true"
+          (opened)="resourceOpenState = true"
+          (closed)="resourceOpenState = false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ resourceOpenState ? 'Скрыть панель' : 'Раскрыть панель'}}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div [formGroup]="ruleForm">
+            <ng-container formArrayName="resource">
+              <div *ngFor="let resource of resourceFrameCount; let i = index" class="subObject">
+                <div class="resource-form-row" [formGroupName]="i">
+                  <div class="form-field">
+                    <select class="form-control form-select" id="microservice" #microservice formControlName="microservice">
+                      <option [value]="null" disabled selected >Выбрать микросервис</option>
+                      <option *ngFor="let microservice of microservices[0]" [value]="microservice.uid">{{microservice.name}}</option>
+                      <!-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww -->
+                    </select>
+                  </div>
+                  <div class="form-field">
+                    <div style="display: flex">
+                      <select class="form-control form-select" [id]="'resourceName' + i" (change)="listener($event, i)" formControlName="resourceName">
+                        <option [value]="null" disabled selected >Выбрать ресурс</option>
+                        <option *ngFor="let resource of resources[i+1]" [value]="resource.name" [title]="resource.description">{{resource.alias}}</option>
+                      </select>
+                      <span class="material-symbols-outlined" (click)="deleteResource(i)">delete</span>
+                    </div>
+                  </div>
+                  <div class="form-field">
+                    <select class="form-control form-select" id="resourceAttribute" formControlName="resourceAttribute">
+                      <option  [value]="null" disabled selected >Выбрать атрибут</option>
+                      <option *ngFor="let attribute of attributes[i+1]" [value]="attribute.name">{{attribute.alias}}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="form-field">
+                    <select class="form-control form-select" id="resourceOperator" formControlName="resourceOperator">
+                      <option value="Равно" default>Равно</option>
+                      <option value="Не равно">Не равно</option>
+                      <option value="Содержит">Содержит</option>
+                      <option value="Не содержит">Не содержит</option>
+                      <option value="Начинается с">Начинается с</option>
+                      <option value="Не начинается с">Не начинается с</option>
+                      <option value="Заканчивается на">Заканчивается на</option>
+                      <option value="Равно">Не заканчивается на</option>
+                    </select>
+                  </div>
+                  <div class="form-field">
+                    <input class="form-control" placeholder="Значение" type="resourceValue" name="resourceValue" [id]="'resourceValue' + i" formControlName="resourceValue">
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </mat-expansion-panel>
+        <div class="form-button-field">
+          <button mat-stroked-button id="addResourceFrame" class="form-button" (click)="addResourceFrame(); $event.preventDefault(); $event.stopPropagation(); this.resourceOpenState = true;">Добавить атрибут</button>
+          <button mat-stroked-button class="form-button" (click)=" $event.preventDefault(); previewResource()">Проверить ресурсы</button>
+        </div>
+      </div>
+      <div style="display: flex">
+        <span class="material-symbols-outlined">settings</span><p style="margin-top: 1px; margin-left: 5px">Действие</p>
+      </div>
+      <div class="form-field">
+        <select class="form-control form-select" name="action" id="action" formControlName="action">
+          <option name="read" selected>Чтение</option>
+          <option name="write">Запись</option>
+        </select>
+      </div>
+      <button mat-stroked-button [disabled]="ruleForm.invalid">
+        Сохранить
+      </button>
+    </form>
+  </div>
+  <div class="information">
+    <h1 *ngIf="userData.length > 0">Найденные пользователи:</h1>
+    <h1 class="information__notfound" *ngIf="userData.length === 0 && valueTouched === true">Информация не найдена</h1>
+    <ul *ngIf="userData.length > 0" class="information__list">
+      <li *ngFor="let item of userData">
+        <p>{{item.first_name}} {{item.last_name}} </p>
+        <p class="email">{{item.email}}</p>
+      </li>
+    </ul>
+  </div>
+</div>

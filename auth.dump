@@ -1,0 +1,1655 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 15.1 (Debian 15.1-1.pgdg110+1)
+-- Dumped by pg_dump version 15.1 (Debian 15.1-1.pgdg110+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: group_attribute; Type: TABLE; Schema: public; Owner: auth
+--
+
+CREATE TABLE public.group_attribute (
+    id character varying(36) NOT NULL,
+    name character varying(255),
+    value character varying(255),
+    group_id character varying(36) NOT NULL
+);
+
+
+ALTER TABLE public.group_attribute OWNER TO auth;
+
+--
+-- Name: keycloak_role; Type: TABLE; Schema: public; Owner: auth
+--
+
+CREATE TABLE public.keycloak_role (
+    id character varying(36) NOT NULL,
+    client_realm_constraint character varying(255),
+    client_role boolean NOT NULL,
+    description character varying(255),
+    name character varying(255),
+    realm_id character varying(255),
+    client character varying(36),
+    realm character varying(36)
+);
+
+
+ALTER TABLE public.keycloak_role OWNER TO auth;
+
+--
+-- Name: microservice; Type: TABLE; Schema: public; Owner: auth
+--
+
+CREATE TABLE public.microservice (
+    uid character varying(36) NOT NULL,
+    name character varying(255) NOT NULL,
+    route character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.microservice OWNER TO auth;
+
+--
+-- Name: resource; Type: TABLE; Schema: public; Owner: auth
+--
+
+CREATE TABLE public.resource (
+    uid character varying(36) NOT NULL,
+    name character varying(255) NOT NULL,
+    attributes text,
+    created_at bigint NOT NULL,
+    microservice_id character varying(36),
+    description character varying(255)
+);
+
+
+ALTER TABLE public.resource OWNER TO auth;
+
+--
+-- Name: resource_rule; Type: TABLE; Schema: public; Owner: auth
+--
+
+CREATE TABLE public.resource_rule (
+    uid character varying(36) NOT NULL,
+    resource_id character varying(36) NOT NULL,
+    rule_id character varying(36) NOT NULL,
+    attribute character varying(255) NOT NULL,
+    operator character varying(64) NOT NULL,
+    value character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.resource_rule OWNER TO auth;
+
+--
+-- Name: rule; Type: TABLE; Schema: public; Owner: auth
+--
+
+CREATE TABLE public.rule (
+    uid character varying(36) NOT NULL,
+    name character varying(255) NOT NULL,
+    description text,
+    created_at bigint NOT NULL,
+    action character varying(255) NOT NULL,
+    id integer NOT NULL
+);
+
+
+ALTER TABLE public.rule OWNER TO auth;
+
+--
+-- Name: rule_id_seq; Type: SEQUENCE; Schema: public; Owner: auth
+--
+
+CREATE SEQUENCE public.rule_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.rule_id_seq OWNER TO auth;
+
+--
+-- Name: rule_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: auth
+--
+
+ALTER SEQUENCE public.rule_id_seq OWNED BY public.rule.id;
+
+
+--
+-- Name: user_entity; Type: TABLE; Schema: public; Owner: auth
+--
+
+CREATE TABLE public.user_entity (
+    id character varying(36) NOT NULL,
+    email character varying(255),
+    email_constraint character varying(255),
+    email_verified boolean NOT NULL,
+    enabled boolean NOT NULL,
+    federation_link character varying(255),
+    first_name character varying(255),
+    last_name character varying(255),
+    realm_id character varying(255),
+    username character varying(255),
+    created_timestamp bigint NOT NULL,
+    service_account_client_link character varying(255),
+    not_before integer
+);
+
+
+ALTER TABLE public.user_entity OWNER TO auth;
+
+--
+-- Name: user_group_membership; Type: TABLE; Schema: public; Owner: auth
+--
+
+CREATE TABLE public.user_group_membership (
+    group_id character varying(36) NOT NULL,
+    user_id character varying(36) NOT NULL
+);
+
+
+ALTER TABLE public.user_group_membership OWNER TO auth;
+
+--
+-- Name: user_role_mapping; Type: TABLE; Schema: public; Owner: auth
+--
+
+CREATE TABLE public.user_role_mapping (
+    role_id character varying(255) NOT NULL,
+    user_id character varying(36) NOT NULL
+);
+
+
+ALTER TABLE public.user_role_mapping OWNER TO auth;
+
+--
+-- Name: user_rule; Type: TABLE; Schema: public; Owner: auth
+--
+
+CREATE TABLE public.user_rule (
+    uid character varying(36) NOT NULL,
+    rule_id character varying(36) NOT NULL,
+    attribute character varying(255) NOT NULL,
+    operator character varying(64) NOT NULL,
+    value character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.user_rule OWNER TO auth;
+
+--
+-- Name: rule id; Type: DEFAULT; Schema: public; Owner: auth
+--
+
+ALTER TABLE ONLY public.rule ALTER COLUMN id SET DEFAULT nextval('public.rule_id_seq'::regclass);
+
+
+--
+-- Data for Name: group_attribute; Type: TABLE DATA; Schema: public; Owner: auth
+--
+
+COPY public.group_attribute (id, name, value, group_id) FROM stdin;
+cda10ef8-af35-45d3-882a-71d4a8d78ccd	должность	программист	690628ed-c04f-4c3f-9d5a-476e4812c0ff
+26f6b1a5-69f8-45a6-8c5c-a3569a5bc8f9	отдел	ПО	690628ed-c04f-4c3f-9d5a-476e4812c0ff
+373c3fd1-00f9-40fa-bfe3-2c9f8acbbaba	должность	роза	23aee2a9-5290-4c30-9880-9a50e66d328c
+e81f662f-ea3f-42fa-bacc-9df5b1f781c6	должность	решала	b76771c2-bf4e-4d38-8ae0-ee2357b1a0ea
+19cd93e6-b23b-4a98-99f7-858060be820e	должность	Ведущий инженер-программист	128afe94-f099-4c0b-b7c5-89f54b3063c3
+63a3cb6f-eebf-47bc-9a4c-72913bd5004e	должность	Ведущий специалист по защите информации	795a62e7-8744-4e6a-b7e8-f6c0f7e482cc
+9436c449-4976-4a98-9a08-7f55354bbb21	должность	Инженер-программист третьей категории	39ad0e6a-bcc3-4c3a-b69a-877699a3234b
+e10e0a5a-98b3-46c9-b019-5fac1525ec5e	должность	Техник-программист второй категории	6f4b7b6d-c898-45b9-a352-de43a4514b38
+a81e63e8-b3ce-4ac0-9575-c7f0d22317aa	должность	Начальник службы программного обеспечения	c022abec-0315-4e77-88e2-ce7f61647e10
+1730faa4-505a-4fb3-b1b0-dba06011b2b3	должность	Инженер-программист второй категории	84ea6eee-a99b-4fd9-b3dc-05d5dc3c15ab
+afefaeb9-83a2-48bc-8230-aaa2688fcbbc	служба	служба программного обеспечения	69c3be25-aee5-4849-93ce-69df5d6d91ad
+3f24a2d5-56a0-4bf3-8465-876597852f0a	должность	инженер-программист первой категории	4f6f49e3-7dd7-4fb6-82cd-5cce73609597
+f73b1fe1-aac4-4bd6-b383-a896a5803490	город	набережные челны	4f748002-bd3f-4f8b-9a3e-e41f5980e35b
+7e740af0-6b2f-41a2-a9ea-2490fee79451	компания	кэр-автоматика	9fe828c1-fd86-4b86-855a-a793b4f1a7fe
+db34cfb0-7ac0-4108-87c6-0fb486fd3b0d	компания	уэс-автоматика	cda82a5c-08cb-47bc-846e-4c6e698e8bd3
+8b5602ba-c97c-4e81-8a6c-6a9449620289	компания	айвис	0f6475b7-8929-4ee1-a302-1c7e819ef745
+86ba4170-0ab8-4760-8ffa-95bc0d3c5118	компания	карно-энерго	de6a3090-398c-4f99-a5b5-c35ee7e8f9f0
+e8a3db3d-6a11-481e-a018-178ea7ed7806	должность	руководитель отдела персонала	4ef07f87-5ad5-4323-891c-3538a325fc9f
+d815a8f6-109c-4a2b-820e-a7531d9f7b2f	admin	admin	bf3c1edd-2673-4c97-b3da-6ae0be6ae08a
+0b7aec98-8ebb-43f8-b233-21a541fd56c8	ovserver	observer	a4c6146e-5be6-48c3-8cc3-8971e88083e3
+a4a0ec18-0c8a-45d3-9b04-5578b2ce1679	служба	служба наладки	009092d7-1f3a-4694-84ae-938425f38d0f
+ec72bd7a-d0c5-489a-931e-ffb55474b624	должность	Ведущий инженер по наладке и испытаниям	143587ec-e03b-4091-a0f0-44177d691236
+ca074861-9d50-4afd-b244-f40c12f70016	служба	служба главных специалистов	b3687b04-82bd-4b0e-9796-660bf1e718d2
+2b72adbc-302c-4282-a7fb-5cf46d223f45	должность	руководитель проектов	2804324a-78c4-421a-8c9d-09a6e4cbd1f2
+ec57cb6c-e500-4b9d-b305-2251ed5ece18	Служба	Служба проектирования	e2efdf8a-7995-498a-834d-b0aaf25f9544
+4f1e623a-996f-4974-9af3-1482a9c8272e	город	казань	81513f19-b0d6-41f4-819c-2e9336ea58e9
+fb337561-d14a-45ff-b20d-5de1e4891098	123	123	15e38991-aa66-443c-acab-182d99b093a6
+302d5542-5df6-40c8-92b7-9162a228eaeb	Должности	дворник	cb943460-0a81-4ae1-8f1a-edeaf0309a95
+\.
+
+
+--
+-- Data for Name: keycloak_role; Type: TABLE DATA; Schema: public; Owner: auth
+--
+
+COPY public.keycloak_role (id, client_realm_constraint, client_role, description, name, realm_id, client, realm) FROM stdin;
+0d4c4e95-1e3d-4130-8c93-cec60271b80c	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	f	${role_default-roles}	default-roles-master	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	\N	\N
+5872b18e-7091-4de2-8300-e118fc4bddf4	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	f	${role_admin}	admin	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	\N	\N
+5fb811cd-90eb-4c9b-9955-b9e4d1ff799f	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	f	${role_create-realm}	create-realm	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	\N	\N
+5712d7b7-6eff-4233-88db-8dfe0b80fc52	717a4e8c-d26d-444b-8157-904149c9a7b0	t	${role_create-client}	create-client	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	717a4e8c-d26d-444b-8157-904149c9a7b0	\N
+9b724915-986e-4fc9-8d28-9b6d6eedc521	717a4e8c-d26d-444b-8157-904149c9a7b0	t	${role_view-realm}	view-realm	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	717a4e8c-d26d-444b-8157-904149c9a7b0	\N
+c1b937f9-110e-4306-844a-25b1bbff3a7f	717a4e8c-d26d-444b-8157-904149c9a7b0	t	${role_view-users}	view-users	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	717a4e8c-d26d-444b-8157-904149c9a7b0	\N
+b6754047-f25e-4038-8ee4-8217ba81d836	717a4e8c-d26d-444b-8157-904149c9a7b0	t	${role_view-clients}	view-clients	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	717a4e8c-d26d-444b-8157-904149c9a7b0	\N
+556bf460-7c26-49a0-bc00-6b9e39ab4959	717a4e8c-d26d-444b-8157-904149c9a7b0	t	${role_view-events}	view-events	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	717a4e8c-d26d-444b-8157-904149c9a7b0	\N
+7b30597b-8cfb-4051-a291-57444ea58b43	717a4e8c-d26d-444b-8157-904149c9a7b0	t	${role_view-identity-providers}	view-identity-providers	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	717a4e8c-d26d-444b-8157-904149c9a7b0	\N
+fe2c5fb1-5ebc-4666-8075-4285e91befe9	717a4e8c-d26d-444b-8157-904149c9a7b0	t	${role_view-authorization}	view-authorization	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	717a4e8c-d26d-444b-8157-904149c9a7b0	\N
+3f33c190-b1ee-47e7-a317-8c26fa8c46e7	717a4e8c-d26d-444b-8157-904149c9a7b0	t	${role_manage-realm}	manage-realm	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	717a4e8c-d26d-444b-8157-904149c9a7b0	\N
+087f3d2d-be31-40c2-8604-5de31f9837cb	717a4e8c-d26d-444b-8157-904149c9a7b0	t	${role_manage-users}	manage-users	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	717a4e8c-d26d-444b-8157-904149c9a7b0	\N
+72ac1c21-2501-4799-95c5-19bb503bc236	717a4e8c-d26d-444b-8157-904149c9a7b0	t	${role_manage-clients}	manage-clients	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	717a4e8c-d26d-444b-8157-904149c9a7b0	\N
+83d3f75f-9f55-428f-82e0-05d09e719f5a	717a4e8c-d26d-444b-8157-904149c9a7b0	t	${role_manage-events}	manage-events	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	717a4e8c-d26d-444b-8157-904149c9a7b0	\N
+24c36d95-c11b-4b64-bc1c-e1a6bfb2f349	717a4e8c-d26d-444b-8157-904149c9a7b0	t	${role_manage-identity-providers}	manage-identity-providers	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	717a4e8c-d26d-444b-8157-904149c9a7b0	\N
+f95573f8-5f4f-4101-934e-f8be9962dc54	717a4e8c-d26d-444b-8157-904149c9a7b0	t	${role_manage-authorization}	manage-authorization	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	717a4e8c-d26d-444b-8157-904149c9a7b0	\N
+6101da69-37a8-42a4-99f0-1e9326e6c64a	717a4e8c-d26d-444b-8157-904149c9a7b0	t	${role_query-users}	query-users	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	717a4e8c-d26d-444b-8157-904149c9a7b0	\N
+0efe7608-2aa4-44aa-bf68-518fd2ba25f8	717a4e8c-d26d-444b-8157-904149c9a7b0	t	${role_query-clients}	query-clients	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	717a4e8c-d26d-444b-8157-904149c9a7b0	\N
+60ce2016-2fa8-4b6c-8758-f46aa460eef4	717a4e8c-d26d-444b-8157-904149c9a7b0	t	${role_query-realms}	query-realms	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	717a4e8c-d26d-444b-8157-904149c9a7b0	\N
+31f60a47-dd46-455c-951b-5d1301ccd9cf	717a4e8c-d26d-444b-8157-904149c9a7b0	t	${role_query-groups}	query-groups	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	717a4e8c-d26d-444b-8157-904149c9a7b0	\N
+9fb3687b-a8f2-4d64-8bc0-d3980e9dfa33	0303766d-cc11-423f-ad68-ef4ab163e4c3	t	${role_view-profile}	view-profile	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	0303766d-cc11-423f-ad68-ef4ab163e4c3	\N
+b5fbccff-2f88-4a6b-b2d0-462627cbc94f	0303766d-cc11-423f-ad68-ef4ab163e4c3	t	${role_manage-account}	manage-account	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	0303766d-cc11-423f-ad68-ef4ab163e4c3	\N
+40c362d9-4941-4e40-a50d-ceee5b79d97c	0303766d-cc11-423f-ad68-ef4ab163e4c3	t	${role_manage-account-links}	manage-account-links	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	0303766d-cc11-423f-ad68-ef4ab163e4c3	\N
+fe5e4c7a-e9fa-4f88-b8a9-a67a9eefeebe	0303766d-cc11-423f-ad68-ef4ab163e4c3	t	${role_view-applications}	view-applications	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	0303766d-cc11-423f-ad68-ef4ab163e4c3	\N
+0be420bd-0410-40b4-882e-b3c4b9f8e4d1	0303766d-cc11-423f-ad68-ef4ab163e4c3	t	${role_view-consent}	view-consent	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	0303766d-cc11-423f-ad68-ef4ab163e4c3	\N
+35360c1a-f945-4abc-a828-34197ddb0157	0303766d-cc11-423f-ad68-ef4ab163e4c3	t	${role_manage-consent}	manage-consent	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	0303766d-cc11-423f-ad68-ef4ab163e4c3	\N
+2a8c4609-2788-4a59-8baa-7da438b80027	0303766d-cc11-423f-ad68-ef4ab163e4c3	t	${role_delete-account}	delete-account	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	0303766d-cc11-423f-ad68-ef4ab163e4c3	\N
+9f40d99b-98d7-4862-a471-02bf6a9111dc	c98c3c53-5a63-4947-8f3c-eed5521b307a	t	${role_read-token}	read-token	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	c98c3c53-5a63-4947-8f3c-eed5521b307a	\N
+21e1f953-1164-4494-b44c-e54b2a1c8a0b	717a4e8c-d26d-444b-8157-904149c9a7b0	t	${role_impersonation}	impersonation	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	717a4e8c-d26d-444b-8157-904149c9a7b0	\N
+5111be63-d25d-400c-8b9e-78d85a86ced2	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	f	${role_offline-access}	offline_access	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	\N	\N
+6dd7ce99-f026-45bf-b334-e9e675ee013e	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	f	${role_uma_authorization}	uma_authorization	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	\N	\N
+c4be5656-df07-4c28-ab13-f81415a8449a	test-realm	f	${role_default-roles}	default-roles-test-realm	test-realm	\N	\N
+b9154949-2130-4b9c-b336-f9a0db46d7fd	a53e0e1c-bac9-4dca-a001-5c9530754e2a	t	${role_create-client}	create-client	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	a53e0e1c-bac9-4dca-a001-5c9530754e2a	\N
+43a1af38-a73c-4750-b12c-86ca036282fc	a53e0e1c-bac9-4dca-a001-5c9530754e2a	t	${role_view-realm}	view-realm	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	a53e0e1c-bac9-4dca-a001-5c9530754e2a	\N
+19c473ae-68be-4120-ac4e-d2b0b4803f92	a53e0e1c-bac9-4dca-a001-5c9530754e2a	t	${role_view-users}	view-users	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	a53e0e1c-bac9-4dca-a001-5c9530754e2a	\N
+307f16d5-33eb-482e-b034-76bc3b3f4d4e	a53e0e1c-bac9-4dca-a001-5c9530754e2a	t	${role_view-clients}	view-clients	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	a53e0e1c-bac9-4dca-a001-5c9530754e2a	\N
+2c454eb4-9add-498c-b098-b6cfc3210a90	a53e0e1c-bac9-4dca-a001-5c9530754e2a	t	${role_view-events}	view-events	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	a53e0e1c-bac9-4dca-a001-5c9530754e2a	\N
+861d336d-48b9-4771-9951-1368eeb34278	a53e0e1c-bac9-4dca-a001-5c9530754e2a	t	${role_view-identity-providers}	view-identity-providers	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	a53e0e1c-bac9-4dca-a001-5c9530754e2a	\N
+ffda544f-faa7-4d63-bc9d-03bd42e6c611	a53e0e1c-bac9-4dca-a001-5c9530754e2a	t	${role_view-authorization}	view-authorization	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	a53e0e1c-bac9-4dca-a001-5c9530754e2a	\N
+f6fb31ad-3fbd-4c79-b98c-54df88b256b0	a53e0e1c-bac9-4dca-a001-5c9530754e2a	t	${role_manage-realm}	manage-realm	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	a53e0e1c-bac9-4dca-a001-5c9530754e2a	\N
+2b5f8bac-7741-41c4-9acd-b912a65f9835	a53e0e1c-bac9-4dca-a001-5c9530754e2a	t	${role_manage-users}	manage-users	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	a53e0e1c-bac9-4dca-a001-5c9530754e2a	\N
+9aca0983-43aa-45f4-9722-f1e127b8f77b	a53e0e1c-bac9-4dca-a001-5c9530754e2a	t	${role_manage-clients}	manage-clients	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	a53e0e1c-bac9-4dca-a001-5c9530754e2a	\N
+a8d4e236-6460-442c-852b-f2d604ff18fe	a53e0e1c-bac9-4dca-a001-5c9530754e2a	t	${role_manage-events}	manage-events	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	a53e0e1c-bac9-4dca-a001-5c9530754e2a	\N
+930433a6-5dab-4b9e-b246-c9d6f6c33ae8	a53e0e1c-bac9-4dca-a001-5c9530754e2a	t	${role_manage-identity-providers}	manage-identity-providers	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	a53e0e1c-bac9-4dca-a001-5c9530754e2a	\N
+88f173d0-ddd7-42d8-96a3-2fb4b5517c06	a53e0e1c-bac9-4dca-a001-5c9530754e2a	t	${role_manage-authorization}	manage-authorization	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	a53e0e1c-bac9-4dca-a001-5c9530754e2a	\N
+efcaab26-de26-4767-8722-95d3ec47fdcf	a53e0e1c-bac9-4dca-a001-5c9530754e2a	t	${role_query-users}	query-users	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	a53e0e1c-bac9-4dca-a001-5c9530754e2a	\N
+76e0a7a4-6f76-46e7-bc91-b89366149025	a53e0e1c-bac9-4dca-a001-5c9530754e2a	t	${role_query-clients}	query-clients	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	a53e0e1c-bac9-4dca-a001-5c9530754e2a	\N
+04d8edd6-2a0a-46d3-8cf6-95555690744f	a53e0e1c-bac9-4dca-a001-5c9530754e2a	t	${role_query-realms}	query-realms	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	a53e0e1c-bac9-4dca-a001-5c9530754e2a	\N
+0a0ff703-cfe1-44fa-88ab-f73cd2b4338c	a53e0e1c-bac9-4dca-a001-5c9530754e2a	t	${role_query-groups}	query-groups	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	a53e0e1c-bac9-4dca-a001-5c9530754e2a	\N
+02f707ed-f593-4419-b8de-5cce2060226c	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_realm-admin}	realm-admin	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+6857b3a1-ee15-4a31-aab2-5004ac814e12	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_create-client}	create-client	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+38701745-8805-4533-be40-a4cfe59cd9ab	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_view-realm}	view-realm	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+9fb0b4fd-0cf1-4196-9a0b-bb421c1745c9	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_view-users}	view-users	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+850cccdf-b1b6-4dd5-9464-af2248a0fb21	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_view-clients}	view-clients	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+ff1d5559-942e-4023-97b2-0095932a4ea9	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_view-events}	view-events	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+59c58d1d-a640-4ff1-bc0c-f449389350f1	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_view-identity-providers}	view-identity-providers	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+c76eeeed-16ed-43f4-97b4-9cbc12293e67	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_view-authorization}	view-authorization	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+64d99f98-be30-40f3-8cdd-8ba07d3493bb	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_manage-realm}	manage-realm	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+1bd10172-a479-4fd8-af28-c4c837463957	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_manage-users}	manage-users	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+ddbc422f-e4b6-4ac3-9e08-caf76993b67b	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_manage-clients}	manage-clients	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+f10a20f2-5d55-4f49-a3e0-fc8f3afcc260	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_manage-events}	manage-events	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+2b2e0c60-78dd-404f-b10d-cba538d8e1a3	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_manage-identity-providers}	manage-identity-providers	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+cf7b14b7-be6e-49ec-8948-61d1cfbc2878	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_manage-authorization}	manage-authorization	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+4945191a-b432-4fd7-8640-576f8a3698fc	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_query-users}	query-users	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+6d4e5e98-4932-4f87-9160-cca42879bf4b	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_query-clients}	query-clients	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+f835e677-57ac-4bcd-8056-ddec73d80e2a	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_query-realms}	query-realms	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+d2dbd7b7-5947-480f-91a9-4d2de6bcf37b	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_query-groups}	query-groups	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+4da1a407-e922-4f8c-afd0-2b3718d29cf3	2849b069-6a27-4a8b-8dbd-c7c28dc75265	t	${role_view-profile}	view-profile	test-realm	2849b069-6a27-4a8b-8dbd-c7c28dc75265	\N
+efd108ac-6e38-43ce-9d6c-53e885576866	2849b069-6a27-4a8b-8dbd-c7c28dc75265	t	${role_manage-account}	manage-account	test-realm	2849b069-6a27-4a8b-8dbd-c7c28dc75265	\N
+4a74d76b-5d44-4dd1-8d98-da4116f17bb6	2849b069-6a27-4a8b-8dbd-c7c28dc75265	t	${role_manage-account-links}	manage-account-links	test-realm	2849b069-6a27-4a8b-8dbd-c7c28dc75265	\N
+6c37b047-1034-4833-976b-bf17daa8eb6d	2849b069-6a27-4a8b-8dbd-c7c28dc75265	t	${role_view-applications}	view-applications	test-realm	2849b069-6a27-4a8b-8dbd-c7c28dc75265	\N
+51db5dda-7fcf-4bf2-9673-1e02d90bc03a	2849b069-6a27-4a8b-8dbd-c7c28dc75265	t	${role_view-consent}	view-consent	test-realm	2849b069-6a27-4a8b-8dbd-c7c28dc75265	\N
+1650345b-1ad1-4593-9173-e8e5ae123d64	2849b069-6a27-4a8b-8dbd-c7c28dc75265	t	${role_manage-consent}	manage-consent	test-realm	2849b069-6a27-4a8b-8dbd-c7c28dc75265	\N
+7240bf74-8810-478c-bffa-adecc31ac518	2849b069-6a27-4a8b-8dbd-c7c28dc75265	t	${role_delete-account}	delete-account	test-realm	2849b069-6a27-4a8b-8dbd-c7c28dc75265	\N
+5eb6ad4f-3529-4e34-a9e1-7a3ef0ddd3bb	a53e0e1c-bac9-4dca-a001-5c9530754e2a	t	${role_impersonation}	impersonation	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	a53e0e1c-bac9-4dca-a001-5c9530754e2a	\N
+cf9ce0b0-1e3f-445a-aa65-7f6ea062694e	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	t	${role_impersonation}	impersonation	test-realm	e5927adb-1e60-46e3-836f-2bfbda8f2b1f	\N
+1a5f1bd1-6f53-4524-9410-cf155edfbef6	1b8660d9-995c-4333-bf85-8c76f74bad9a	t	${role_read-token}	read-token	test-realm	1b8660d9-995c-4333-bf85-8c76f74bad9a	\N
+ecbfc54f-1a23-4e26-9336-50498989bdd2	test-realm	f	${role_offline-access}	offline_access	test-realm	\N	\N
+5926f14c-081e-4e16-bf59-6a722b5c4d73	test-realm	f	${role_uma_authorization}	uma_authorization	test-realm	\N	\N
+4496a450-70ec-4f5c-956f-f426634c1ef0	86b19aa8-6679-4e3a-9c6b-332d5f02ab30	t	\N	users	test-realm	86b19aa8-6679-4e3a-9c6b-332d5f02ab30	\N
+04435b81-4304-4288-b008-e21b76532d10	test-realm	f	\N	developer	test-realm	\N	\N
+a7d67ced-cf92-49ea-951e-f9b8b0762400	29b6d171-58e8-4e4f-af30-942b9e81ef5d	t	\N	users	test-realm	29b6d171-58e8-4e4f-af30-942b9e81ef5d	\N
+ab5edf27-2dab-44f8-ae4b-4dd4b7ab32b6	test-realm	f	\N	all_bt_request_viewer	test-realm	\N	\N
+f7ba8b18-4e67-466a-b8e5-9ee9ce384333	test-realm	f	\N	ais_request_to_software_admin	test-realm	\N	\N
+1ba7845e-2a60-4c94-a0e2-1e9697c1c88e	test-realm	f	\N	Employee	test-realm	\N	\N
+71eee4f1-bdd7-4547-9913-fc951ffe8ba4	test-realm	f	\N	Admin	test-realm	\N	\N
+\.
+
+
+--
+-- Data for Name: microservice; Type: TABLE DATA; Schema: public; Owner: auth
+--
+
+COPY public.microservice (uid, name, route) FROM stdin;
+7ce490d4-5362-4f91-a553-e82b0ed328e0	Реестр проектов	http://10.11.2.153:48800/api/project-list
+36ec382b-7ad9-46fb-942c-907ec2bd01c7	шелл	http://10.11.11.5:48000/api/shell
+e4c8fc2a-97be-4dd7-82c3-7baf3650dcb0	Группы	http://10.11.2.153:49300/api/groups
+91e88c32-dbce-49d4-ad60-040d82e546ae	заявки на ПО	http://10.11.2.153:49000/api/request-to-software
+6d0cd477-ad02-457b-9f7a-fa72d1646ac8	контрагенты	http://10.11.2.153:48600/api/counterparty
+faa6018c-f13d-4813-8f90-6cb6c0be2979	канбан	http://10.11.10.10:48400/api/task-manager
+13c36e85-1ae5-4182-b511-9fec9865f746	отчет	http://10.11.10.10:48700/api/reports
+6bcd4210-622a-4dfa-a405-56d296b55edd	Штатное расписание	http://10.11.10.10:48500/api/staffing-list
+\.
+
+
+--
+-- Data for Name: resource; Type: TABLE DATA; Schema: public; Owner: auth
+--
+
+COPY public.resource (uid, name, attributes, created_at, microservice_id, description) FROM stdin;
+aaeb5226-8cd0-4668-9a7b-69b45300b1b7	menu	name	1684305458645	36ec382b-7ad9-46fb-942c-907ec2bd01c7	undefined
+feb9516f-cc2e-4410-8699-69c90363839a	showcase	name,link,route	1684305458649	36ec382b-7ad9-46fb-942c-907ec2bd01c7	undefined
+50a9d71c-5059-4df7-95d8-fe9b319f4d12	catalog	name,user_id	1688042406683	36ec382b-7ad9-46fb-942c-907ec2bd01c7	undefined
+02e86154-df2a-436c-ab39-945f22ab9ccc	counterparty	uid,type,name,fullname,groupid,region,inn,kpp,orgn,okato,oktmo,okpo,okogu,okfs,okved,manager,legaladdress,actualadress,postaladdress,phone,email	1688561347207	6d0cd477-ad02-457b-9f7a-fa72d1646ac8	\N
+aa8f1352-ca57-473c-ae20-36fd864f2c84	group	id,name	1688561347218	6d0cd477-ad02-457b-9f7a-fa72d1646ac8	\N
+72900efb-1672-44e5-8370-3f091b7d6139	person	id,uid,username,keyloackconnection,name,name2,email,phone,email2,phone2,city,tnumber,division,post,status,status2,director_division,date_of_employment,date_of_dismissal,"parentid",avatarurl,companyid,groupid	1687867362161	6bcd4210-622a-4dfa-a405-56d296b55edd	undefined
+fce9fb45-d189-441f-a884-4a3764091d6f	company	id,name,visible,index,groupid	1687867362164	6bcd4210-622a-4dfa-a405-56d296b55edd	undefined
+4118f625-9910-4971-99e3-7d033492b5f9	groupstaffingtable	id,name,visible	1689753359388	6bcd4210-622a-4dfa-a405-56d296b55edd	\N
+5d65611d-d534-41f5-b8fe-5e3448f41e27	groupgroups	uid,name,description,projectsuid,createdate	1690972736410	e4c8fc2a-97be-4dd7-82c3-7baf3650dcb0	undefined
+c3efca30-3ece-4d26-b451-bcb03041c9c7	rolegroups	id,name,description	1690972736421	e4c8fc2a-97be-4dd7-82c3-7baf3650dcb0	undefined
+3ab22aa9-6b91-47eb-90b3-58d4142bf436	reports	id,title,date,duration,place,worktype,work,issuedtkptask,description,creatorid	1684492585165	13c36e85-1ae5-4182-b511-9fec9865f746	undefined
+ca50dbf9-0f99-4dde-9b0a-421ea20fe83a	requesttosoftware	uid,num,name,authoruid,authorname,createdate,requestpriority,urgency,volumecomplexity,appname,appdescription,bussimessanalystneed,status,group,lastactiveemployeename,lastactiveemployeeuid,bisanname,bisanuid,bisanworkdatestart,bisanworkdateend,bisanworkcost,developername,developeruid,developerworkdatestart,developerworkdateend,developerworkcost	1690286182023	91e88c32-dbce-49d4-ad60-040d82e546ae	undefined
+4d6fd036-0318-489a-aa2d-5b70913142b7	requesthistory	id,requestsnum,authoruid,authorname,createdate,action,message	1690286182029	91e88c32-dbce-49d4-ad60-040d82e546ae	undefined
+bc32c5b9-24fe-493c-8e8a-a26fc1e34c4b	employeegroups	uid,roleid	1690972736423	e4c8fc2a-97be-4dd7-82c3-7baf3650dcb0	undefined
+7a693cb5-adef-41f2-8ff6-26908e290da9	taskschema	id,deadline,position,creatorid,created_at,importance,do_after	1684843108366	faa6018c-f13d-4813-8f90-6cb6c0be2979	undefined
+feef7e6f-1458-4476-b9fe-17037d8d4fae	tasksectionschema	id,creatorid,start,end	1684843108379	faa6018c-f13d-4813-8f90-6cb6c0be2979	undefined
+89cd2718-4e6d-4179-9e4b-557da3d5f566	usercolumn	id,assignid,performerid,assignkeycloackuser,performerkeycloackuser,tasks	1684843108381	faa6018c-f13d-4813-8f90-6cb6c0be2979	undefined
+177940ad-3710-4e8d-9481-93133a99ab35	formula	id,formula	1685970957915	faa6018c-f13d-4813-8f90-6cb6c0be2979	undefined
+b3cf573c-21a4-40d5-9276-75ddbeffd3f0	projectschema	id,title,creatorid,usercolumns,creatorcolumn	1686750730943	faa6018c-f13d-4813-8f90-6cb6c0be2979	undefined
+\.
+
+
+--
+-- Data for Name: resource_rule; Type: TABLE DATA; Schema: public; Owner: auth
+--
+
+COPY public.resource_rule (uid, resource_id, rule_id, attribute, operator, value) FROM stdin;
+2f516f25-c233-436f-bd13-510f23055f2a	feb9516f-cc2e-4410-8699-69c90363839a	1429e8fe-1de1-4942-8c89-e098e186022f	name	Равно	канбан
+9f46ff85-e5e4-4b0a-a71f-3dd41650eabd	50a9d71c-5059-4df7-95d8-fe9b319f4d12	93780537-5afe-4d34-a9b1-18fa03ae43d1	name	Равно	*
+a3f4c577-6e87-4844-8c61-02fbe89acd85	89cd2718-4e6d-4179-9e4b-557da3d5f566	6724d12d-cfbc-4e4d-a1cd-3571fcbe4eb6	id	Равно	*
+43d2fdbc-c7d7-4c61-9fb0-1e653de7238b	50a9d71c-5059-4df7-95d8-fe9b319f4d12	2e3dc86b-abe9-4521-86cd-a45c6c5c20a4	name	Равно	*
+d0ad9aa9-8662-4d1b-8fb3-d9f4ca212dce	aaeb5226-8cd0-4668-9a7b-69b45300b1b7	06a9d2fe-35fd-4786-b665-c0525d134ac9	name	Равно	*
+8d44ab6a-04c6-4837-acdb-cc2ba509d45c	feb9516f-cc2e-4410-8699-69c90363839a	0d607498-db21-4827-804e-c8eba652a4f3	name	Равно	Чат
+0177b4c4-e296-4777-a592-2338d6055b20	feb9516f-cc2e-4410-8699-69c90363839a	cd3ea119-01ea-44aa-a7f3-8ca1158f0329	name	Равно	Отчет по работе
+73cef58d-7e8f-40c8-8006-05adbf476c05	177940ad-3710-4e8d-9481-93133a99ab35	2637e454-cbc7-43de-ae93-1620eb44833d	id	Равно	*
+6f69425d-eb5a-4831-9880-7283f40a2e12	89cd2718-4e6d-4179-9e4b-557da3d5f566	0d032317-71d0-4eda-93ac-12585b978e53	id	Равно	*
+311996c7-ec31-4d6e-bfc6-d229aced64d0	feef7e6f-1458-4476-b9fe-17037d8d4fae	a41ff9ac-357b-4223-95ce-80e7883022b3	id	Равно	*
+8fc7318c-8d08-4d0e-9ea8-e888b5c98593	7a693cb5-adef-41f2-8ff6-26908e290da9	b212a656-1971-4ebd-8f67-a738f117e09a	id	Равно	*
+3f9bd0f7-c8a2-4de4-a431-c5cfb3c2330b	3ab22aa9-6b91-47eb-90b3-58d4142bf436	59f3d8ab-b47d-4da2-bc0d-ab35df9ce219	id	Равно	*
+084c5e9a-d82a-4c79-ada5-7cfa267408cb	50a9d71c-5059-4df7-95d8-fe9b319f4d12	d4052489-7a59-4921-a7ae-8e26b240af9c	name	Равно	*
+f314cbae-6703-42fd-ac9f-e5a88f9b944f	feb9516f-cc2e-4410-8699-69c90363839a	83adf9eb-9d7f-414a-8814-cb5226c68bab	name	Равно	Канбан
+a8868ebd-2058-4238-9246-651ff6345685	b3cf573c-21a4-40d5-9276-75ddbeffd3f0	ed1ec117-e29f-41f8-b670-fc0dbc975e4a	id	Равно	*
+9b49d861-fc78-4dcc-a7c5-ba636d65c977	72900efb-1672-44e5-8370-3f091b7d6139	916adff4-2184-435d-bbfb-38dc85711ec2	id	Равно	*
+231cafc6-63d5-4a8f-acb4-90b95741b418	4118f625-9910-4971-99e3-7d033492b5f9	0e6302fe-e083-4093-8a68-db69d3cfcbe7	id	Равно	*
+05e764e8-8ef1-4cc3-b2ef-39940d483382	fce9fb45-d189-441f-a884-4a3764091d6f	c5690600-5e58-4031-b6cb-63329094b83d	id	Равно	*
+ded07d5c-ee04-489b-a6da-ce712b005cd2	4d6fd036-0318-489a-aa2d-5b70913142b7	86e48f9e-7906-44a2-9079-345a9bbbc469	id	Равно	*
+612ed981-9270-4569-a777-f186b6ba69cf	ca50dbf9-0f99-4dde-9b0a-421ea20fe83a	8f435b9f-a721-487f-97fe-1dc6d4bb8a84	uid	Равно	*
+fb1c44e4-dcbe-4cb2-bb32-4658afcb1f89	ca50dbf9-0f99-4dde-9b0a-421ea20fe83a	bbfb6b2d-042f-4c51-b960-2263f9724577	uid	Равно	*
+3d075913-9817-4822-bb51-2c92d4b46273	4d6fd036-0318-489a-aa2d-5b70913142b7	d5611ae3-7610-4143-8588-5c739bafaec9	id	Равно	*
+1cdb8847-c7d8-49a3-b90d-e07a4afc463f	4d6fd036-0318-489a-aa2d-5b70913142b7	c048151c-d3fa-4876-a3c4-39c1fc33c2a4	id	Равно	*
+da909f17-6b5d-4645-8e76-53428b6d559f	4d6fd036-0318-489a-aa2d-5b70913142b7	de447cb7-280b-4d4a-b605-ed00d20683e3	id	Равно	*
+7c4fdadf-c94d-4bf3-bece-486adfcbc0dc	aaeb5226-8cd0-4668-9a7b-69b45300b1b7	de45f641-68dc-4f6c-9cd7-0ebae7cca8dd	name	Равно	Канбан
+40f38383-aa33-4f1c-a5a3-e0f8436d04db	feb9516f-cc2e-4410-8699-69c90363839a	a73abaeb-9d9d-41b0-9159-f6ec7e03479c	name	Равно	Канбан
+59989b89-a1bb-47a1-b710-c2f165afb35c	feb9516f-cc2e-4410-8699-69c90363839a	0f9c4a72-091c-4e30-9152-4fd71cb8467d	name	Равно	Чат
+1e848e5a-8192-440c-9976-2ef10237ba1b	aaeb5226-8cd0-4668-9a7b-69b45300b1b7	a732bd4c-c7e7-4abc-8527-9a5eddaa81b6	name	Равно	Чат
+3991d367-f06d-4703-b0c6-981d15412d95	aaeb5226-8cd0-4668-9a7b-69b45300b1b7	fb45e925-2409-46a5-a190-2ab2a5ccf215	name	Равно	Заявки на командировку
+c974fbcf-4a3c-49e8-adbe-96adba2ada11	feb9516f-cc2e-4410-8699-69c90363839a	bb000f51-ce75-4afa-8a50-8b60d9246560	name	Равно	Заявки на командировку
+50b5974a-ab52-4905-a42d-7357b8bb6d8c	aaeb5226-8cd0-4668-9a7b-69b45300b1b7	7f6d2e09-0afd-4fbe-ac56-9311a82b91c4	name	Равно	Отчет по работе
+2c56d595-d7df-4b01-b07d-83e33602a240	feb9516f-cc2e-4410-8699-69c90363839a	f333ba3f-62b8-46fd-8f16-3f313a6affbe	name	Равно	Отчет по работе
+3639b3c1-aaf4-489c-af5d-0a0435b09ad7	aaeb5226-8cd0-4668-9a7b-69b45300b1b7	6487c3a1-789d-47c8-8e93-4ee5bbfe90c2	name	Равно	Чат
+106edf0e-acff-434f-b299-0422583656b5	aaeb5226-8cd0-4668-9a7b-69b45300b1b7	7c5fbb6a-242e-4c02-ae63-e11f2ef5d478	name	Равно	Штатное расписание
+7c216b61-7de2-46d3-af67-559554e8b7b0	feb9516f-cc2e-4410-8699-69c90363839a	142ef6f8-5ebc-4e76-844d-b9c9f5f37d05	name	Равно	Чат
+bd28741a-010a-4489-8bed-f7e6874b2c0b	feb9516f-cc2e-4410-8699-69c90363839a	14138194-0861-49fc-b307-f55ed2f485d1	name	Равно	Штатное расписание
+342d2c7d-9b7e-4e6f-817b-6f50f9049faa	aaeb5226-8cd0-4668-9a7b-69b45300b1b7	303b57f7-55a7-485e-a27e-8d77875b5cb4	name	Равно	Чат
+f43db248-c518-42fa-b2b3-c35dec200659	aaeb5226-8cd0-4668-9a7b-69b45300b1b7	b85d12b8-c46c-4d96-a959-95462e04320f	name	Равно	Отчет по работе
+c09ad245-36f9-429d-802d-6ff10f7bade0	aaeb5226-8cd0-4668-9a7b-69b45300b1b7	cbb8deb4-f970-4924-bd76-a459425bf465	name	Равно	Канбан
+16c7b14b-a445-4bd0-9afb-d3d42dc56bf5	feb9516f-cc2e-4410-8699-69c90363839a	445c64ac-9441-43de-8f7d-ed6ef3e2906e	name	Равно	Канбан
+63997043-e5f4-46ce-836a-0b73b99ca5b2	feb9516f-cc2e-4410-8699-69c90363839a	be8e20d6-ad89-476e-b897-b43c0908d4a7	name	Равно	Чат
+35391877-9b1f-4cee-b541-db1264aa28c7	feb9516f-cc2e-4410-8699-69c90363839a	67936cef-2222-4d1c-81a0-64c1032105d0	name	Равно	Отчет по работе
+872e76cc-4bde-47b7-a972-598322a2a1b6	7a693cb5-adef-41f2-8ff6-26908e290da9	b7a4321f-cd47-4c57-97cc-4aa9f4177500	id	Равно	*
+058d0a53-a1c2-49db-bb2b-36c2814e6685	feef7e6f-1458-4476-b9fe-17037d8d4fae	36897b8d-ab53-4169-a60a-14388b47a35c	id	Равно	*
+80bcc800-fe7b-48b1-b34e-79490d95525c	b3cf573c-21a4-40d5-9276-75ddbeffd3f0	d13f2323-7376-4940-bcde-1b6be0d7f672	id	Равно	*
+9ca8d17b-07b4-4dd4-8c66-67b8b7a1a17c	960f4220-1ac7-4d11-808f-b2bc44f78003	2c43d76c-0ba9-4564-90e3-249ec676c247	uid	Равно	*
+fb52198d-271c-4675-ae21-0a8e04ad6b91	3ab22aa9-6b91-47eb-90b3-58d4142bf436	655aedcf-337b-4a13-aebf-eb6b50ece28a	id	Равно	*
+\.
+
+
+--
+-- Data for Name: rule; Type: TABLE DATA; Schema: public; Owner: auth
+--
+
+COPY public.rule (uid, name, description, created_at, action, id) FROM stdin;
+0d032317-71d0-4eda-93ac-12585b978e53	Правило доступа службы главных специалистов к канбану	Правило доступа службы главных специалистов к канбану	1689075491107	Запись	1
+a41ff9ac-357b-4223-95ce-80e7883022b3	Правило доступа службы главных специалистов к канбану	Правило доступа службы главных специалистов к канбану	1689075516851	Запись	2
+b212a656-1971-4ebd-8f67-a738f117e09a	Правило доступа службы главных специалистов к канбану	Правило доступа службы главных специалистов к канбану	1689075534990	Запись	6
+86e48f9e-7906-44a2-9079-345a9bbbc469	request_to_software(requesthistory)	доступ к странице history	1685429580235	Запись	17
+d5611ae3-7610-4143-8588-5c739bafaec9	request_to_software(requesthistory)	полный доступ для группы full_access	1685442390139	Запись	18
+c048151c-d3fa-4876-a3c4-39c1fc33c2a4	request_to_software(requesthistory)	доступ к странице history для Руководителя отдела ПО	1685455608101	Запись	19
+de447cb7-280b-4d4a-b605-ed00d20683e3	request_to_software(requesthistory)\t	доступ к странице history для Бизнес аналитика	1685527963555	Запись	20
+de45f641-68dc-4f6c-9cd7-0ebae7cca8dd	Доступ инженеров отдела ПО на меню	Правило для инженеров программистов первой категории отдела ПО на ресурс меню	1687418470190	Запись	21
+8f435b9f-a721-487f-97fe-1dc6d4bb8a84	Должность Заказчик	Показ своих заявок	1685434224386	Запись	22
+bbfb6b2d-042f-4c51-b960-2263f9724577	Должность Бог(Группа full_access)	полный доступ для группы full_access	1685442259883	Запись	23
+a73abaeb-9d9d-41b0-9159-f6ec7e03479c	Правило для инженеров службы ПО на витрину приложений	Правило для инженеров службы ПО на витрину приложений канбан	1687418561695	Чтение	27
+0f9c4a72-091c-4e30-9152-4fd71cb8467d	Правило для инженеров службы ПО на витрину приложений сервис чат	Правило для инженеров службы ПО на витрину приложений сервис чат	1687420658581	Чтение	34
+a732bd4c-c7e7-4abc-8527-9a5eddaa81b6	Правило для инженеров службы ПО на меню сервис чат	Правило для инженеров службы ПО на меню сервис чат	1687420851962	Запись	35
+fb45e925-2409-46a5-a190-2ab2a5ccf215	Правило для инженеров службы ПО на заявки на командировку на ресурс меню	Правило для инженеров службы ПО на заявки на командировку на ресурс меню	1687421206330	Запись	36
+bb000f51-ce75-4afa-8a50-8b60d9246560	Правило для инженеров службы ПО на заявки на командировку на ресурс витрина	Правило для инженеров службы ПО на заявки на командировку на ресурс витрина	1687421251992	Чтение	37
+7f6d2e09-0afd-4fbe-ac56-9311a82b91c4	Правило для инженеров службы ПО на отчеты на ресурс меню	Правило для инженеров службы ПО на отчеты на ресурс меню	1687422148832	Запись	38
+f333ba3f-62b8-46fd-8f16-3f313a6affbe	Правило для инженеров службы ПО на отчеты на ресурс витрина	Правило для инженеров службы ПО на отчеты на ресурс витрина	1687422190655	Чтение	39
+6487c3a1-789d-47c8-8e93-4ee5bbfe90c2	Правило для доступа HR к меню	Правило для доступа HR к меню	1687430000191	Запись	40
+7c5fbb6a-242e-4c02-ae63-e11f2ef5d478	Правило для доступа HR к меню штатка	Правило для доступа HR к меню штатка	1687430034530	Запись	41
+142ef6f8-5ebc-4e76-844d-b9c9f5f37d05	Правило для доступа HR к витрине чат	Правило для доступа HR к витрине чат	1687430067667	Чтение	42
+14138194-0861-49fc-b307-f55ed2f485d1	Правило для доступа HR к витрине штатка	Правило для доступа HR к витрине штатка	1687430095849	Чтение	43
+303b57f7-55a7-485e-a27e-8d77875b5cb4	доступ для службы ПО к чату в меню	доступ для службы ПО к чату в меню	1687438123403	Запись	45
+b85d12b8-c46c-4d96-a959-95462e04320f	доступ для службы ПО к отчетам в меню	доступ для службы ПО к отчетам в меню	1687438204495	Запись	46
+cbb8deb4-f970-4924-bd76-a459425bf465	доступ для службы ПО к канбану в меню	доступ для службы ПО к канбану в меню	1687438252612	Запись	47
+445c64ac-9441-43de-8f7d-ed6ef3e2906e	доступ для службы ПО к канбану в витрине	доступ для службы ПО к канбану в витрине	1687438355550	Чтение	48
+be8e20d6-ad89-476e-b897-b43c0908d4a7	доступ для службы ПО к чату в витрине	доступ для службы ПО к чату в витрине	1687438400296	Чтение	49
+67936cef-2222-4d1c-81a0-64c1032105d0	доступ для службы ПО к отчетам в витрине	доступ для службы ПО к отчетам в витрине	1687438423776	Чтение	50
+b7a4321f-cd47-4c57-97cc-4aa9f4177500	равило доступа на канбан для службы ПО	равило доступа на канбан для службы ПО	1687438898755	Запись	51
+36897b8d-ab53-4169-a60a-14388b47a35c	равило доступа на канбан для службы ПО	равило доступа на канбан для службы ПО	1687438935896	Запись	52
+2e3dc86b-abe9-4521-86cd-a45c6c5c20a4	Доступ к каталогам для HR	Доступ к каталогам для HR	1688541116028	Запись	53
+d13f2323-7376-4940-bcde-1b6be0d7f672	Правило для сотрудников службы ПО к отчетам	Правило для сотрудников службы ПО к отчетам	1687439490897	Запись	54
+2c43d76c-0ba9-4564-90e3-249ec676c247	Правило для сотрудников службы ПО к отчетам	Правило для сотрудников службы ПО к отчетам	1687439593465	Запись	55
+655aedcf-337b-4a13-aebf-eb6b50ece28a	Служба ПО к отчетам	Служба ПО к отчетам	1687442022012	Запись	56
+1429e8fe-1de1-4942-8c89-e098e186022f	доступ службы ПО к витрине	доступ службы ПО к витрине	1688114849282	Запись	64
+93780537-5afe-4d34-a9b1-18fa03ae43d1	правило для каталогов	правило для каталогов	1688122095412	Запись	65
+6724d12d-cfbc-4e4d-a1cd-3571fcbe4eb6	test1213	aaaaaaaa	1688456507496	Чтение	66
+06a9d2fe-35fd-4786-b665-c0525d134ac9	Правило для службы главных специалистов для доступа к меню	Правило для службы главных специалистов для доступа к меню	1689072864550	Запись	67
+cd3ea119-01ea-44aa-a7f3-8ca1158f0329	Правило для службы главных специалистов для доступ к витрине к отчетам	Правило для службы главных специалистов для доступ к витрине к отчетам	1689073397538	Запись	68
+2637e454-cbc7-43de-ae93-1620eb44833d	Правило доступа службы главных специалистов к канбану	Правило доступа службы главных специалистов к канбану	1689073846039	Запись	69
+59f3d8ab-b47d-4da2-bc0d-ab35df9ce219	Правило доступа службы главных специалистов к отчетам	Правило доступа службы главных специалистов к отчетам	1689075669675	Запись	70
+d4052489-7a59-4921-a7ae-8e26b240af9c	Правило для службы главных специалистов для доступа к каталогам	Правило для службы главных специалистов для доступа к каталогам	1689257094847	Запись	71
+0d607498-db21-4827-804e-c8eba652a4f3	Правило для службы главных специалистов для доступа к витрине к чату	Правило для службы главных специалистов для доступа к витрине к чату	1689073141928	Запись	72
+83adf9eb-9d7f-414a-8814-cb5226c68bab	Правило для службы главных специалистов для доступа к витрине к канбану	Правило для службы главных специалистов для доступа к витрине к канбану	1689257161250	Чтение	73
+ed1ec117-e29f-41f8-b670-fc0dbc975e4a	Правило для службы главных специалистов для доступа к канбану	Правило для службы главных специалистов для доступа к канбану	1689257260456	Запись	74
+916adff4-2184-435d-bbfb-38dc85711ec2	Доступ к Штатному расписанию для HR	Ресурс Person	1689752345744	Чтение	75
+0e6302fe-e083-4093-8a68-db69d3cfcbe7	Доступ к Штатному расписанию для HR	Ресурс Group	1689753435162	Чтение	77
+c5690600-5e58-4031-b6cb-63329094b83d	Доступ к Штатному расписанию для HR	Ресурс Company	1689753646908	Чтение	78
+6cb3d0ea-f254-45c9-b649-a1477bc46627	null	null	1690273923394	null	80
+29b65cdf-103e-460c-b6d8-7d0d7d794de4	null	null	1690273927802	null	81
+ec269347-20f8-42e6-9a9c-a6c58ebf238d	null	null	1690353137585	null	82
+9d494ce6-3f8c-42b6-90a3-84575b9747e8	null	null	1690353591512	null	83
+a9c40a65-0d7f-4ded-a189-dc94d808c97d	null	null	1690353894917	null	84
+cd62798a-7814-460b-92de-1f71ea9aef14	null	null	1690353897330	null	85
+e4ad90be-618d-432c-ada0-a1695599eecc	null	null	1690353898704	null	86
+1f312684-b121-4222-b963-91ecbc4f92cb	null	null	1690353899353	null	87
+b1c556ea-6a83-44be-a86e-acaeee5169d8	null	null	1690354142237	null	88
+60655194-4f88-430e-9353-cd51c08522a6	null	null	1690354146307	null	89
+cd2c0d42-2c6e-4834-b7d0-b1ab91c55959	null	null	1690354148638	null	90
+88262df3-b1c5-4b05-8e4f-e3789ec5e6e1	null	null	1690354149532	null	91
+511432c0-136d-4c76-a437-613f1042ac7d	null	null	1690354150355	null	92
+e787dbbe-3d67-4f30-b35e-eef08841a58b	null	null	1690354151234	null	93
+318dbf70-1935-469b-8af9-d43df9bba9b3	null	null	1690354172275	null	94
+50af2cbc-0617-4d51-ae7c-ae22dcbcb185	null	null	1690354173058	null	95
+71c704b9-0b7d-4104-9fdd-3b13ac1b9faf	null	null	1690354174154	null	96
+6bc70a8c-1b2b-4a4c-886c-a1c6cd2be965	null	null	1690354174889	null	97
+a1f07bed-a499-4449-9b92-a0c178d0a314	null	null	1690354822953	null	98
+376bc740-cca2-4def-9410-1bd8d78252bd	null	null	1690354824000	null	99
+f31f2d9e-1da4-4920-96db-ad28cf3a0669	null	null	1690354824734	null	100
+bf49c549-78bb-4158-b211-e939b7be9200	null	null	1690354825901	null	101
+381c9c1e-eb94-4d49-a4f9-83cca7c668ab	null	null	1690354827637	null	102
+bb68e501-4d3b-4f3d-b700-2385d38760f5	null	null	1690354828686	null	103
+7fcbc075-4f74-4e19-8359-3b9e6d225338	null	null	1690358651631	null	104
+998a9159-c96e-4941-85c2-28b2e933ddb7	null	null	1690358652543	null	105
+b937a650-e7eb-41d1-a7e7-cf6fe94030e4	null	null	1690358653870	null	106
+e8027550-b5ce-4743-a977-2041fb8d68a9	null	null	1690358654578	null	107
+dedfa5f0-2985-4d9c-a9cf-b825b022515c	null	null	1690358658592	null	108
+6a1901ce-d675-42af-94dc-456d7c8394da	null	null	1690358659885	null	109
+bdeb3b28-f2cb-4a87-90f6-f5af62852abe	null	null	1690358662314	null	110
+0cf6b1a0-f358-4cf5-86c5-146215f00e7f	null	null	1690358664131	null	111
+6e22b92c-81ec-4ee4-843d-72e629a75470	null	null	1690358675266	null	112
+e0ccee2a-29a1-4e5f-9e63-71f8123b53c1	null	null	1690358676132	null	113
+5564b039-871a-43b6-a4db-e5ea66ecb422	null	null	1690358677331	null	114
+03a41c74-7e2e-4351-a6fd-f276201ceb89	null	null	1690358678760	null	115
+a7b5816f-e0db-4aac-9282-da29dc36784b	null	null	1690358679716	null	116
+92eb1b7b-49b3-4564-a052-06dbaccaa102	null	null	1690358680840	null	117
+65d5fce9-e214-4356-8738-b8e80d55b956	null	null	1690358681643	null	118
+9253c5c2-1252-477c-b367-a9dfd0755358	null	null	1690358683245	null	119
+b4f975e5-5629-48f0-9666-2fea839db860	null	null	1690358687282	null	120
+52e806fe-d7a5-4807-b650-31004a0125a4	null	null	1690358688338	null	121
+db7fda29-c0fa-4168-afeb-fe67c7575cd6	null	null	1690358690829	null	122
+470a40bb-d67e-4e50-bdd6-5c038a07e423	null	null	1690358691985	null	123
+0b4557b2-3eea-4414-9193-64f285f2ddf7	null	null	1690358716929	null	124
+9aa39b63-62e7-4c72-9c88-ec40fa056e53	null	null	1690358729785	null	125
+b9c6a7ea-626e-4f66-880f-a875f70a126d	null	null	1690358733050	null	126
+f2e46509-d6e4-4c3b-888b-962a91fd8ad4	null	null	1690358805555	null	127
+d2f23814-f3f8-4821-ab22-644833c7dac5	null	null	1690358808457	null	128
+90d0352d-047f-42ef-9d07-11e400dc530f	null	null	1690359223783	null	129
+b735b6ce-a58f-49ff-b194-9908dd8b8102	null	null	1690359353739	null	130
+8f999515-f394-4958-98ee-a85d6241febb	null	null	1690359418775	null	131
+52a55673-fbd0-4462-864a-1776133a20e8	null	null	1690359991896	null	132
+b12512e7-345f-45a2-a91d-b896cffcf5e3	null	null	1690360005202	null	133
+4d675e7c-a8b3-418b-9bf7-9d2aedf930be	null	null	1690360007365	null	134
+b933d91e-2e63-4e5e-8059-7f88f8294795	null	null	1690360008739	null	135
+e42801f8-dd11-45c0-854d-15372b03652b	null	null	1690360039532	null	136
+3fca94f2-6366-44bc-ad71-bd191d262403	null	null	1690360042877	null	137
+4d2b0478-617c-4057-a104-a6e9b15e61f6	null	null	1690360175809	null	138
+cef1a233-90e4-4465-af19-2f7899e3f90e	null	null	1690360228696	null	139
+f063db48-e07e-4bc0-8da3-493fb19e2f78	null	null	1690360246889	null	140
+cef1412c-45c5-47dd-bd4a-6f358531ae6f	null	null	1690360253113	null	141
+8328228f-9c4c-4835-aaa4-897638d1d346	null	null	1690360255584	null	142
+f2955cb6-21d5-43de-b8af-a6a496b00acf	null	null	1690360256399	null	143
+265ab6e7-572d-4022-8640-2b59cc345aba	null	null	1690360346400	null	144
+00213630-3120-4954-b205-55d208dbda02	null	null	1690360347356	null	145
+d117d158-5998-411b-8219-535117cc4e1f	null	null	1690360359528	null	146
+7efbc1ba-0958-4a6f-86e9-d88acb51b733	null	null	1690360360922	null	147
+44a59c6b-5bd1-4661-9ea9-f2782e083586	null	null	1690360394502	null	148
+42804ad3-55ac-4541-aee3-09397b689706	null	null	1690360396287	null	149
+9b37fa2e-dc5c-4ee4-93b7-79ba90fe1beb	null	null	1690360424258	null	150
+69b2c35d-4bf8-4791-9704-ee23d42af2df	null	null	1690360430991	null	151
+df275831-9711-4ff2-86b5-082800adce9d	null	null	1690360432025	null	152
+ea27e72e-ee96-49aa-89b8-4260311cc613	null	null	1690360432774	null	153
+10835d8f-aa8b-4517-b7b4-bb23f8a725e9	null	null	1690360433884	null	154
+44014e5f-e278-41c9-bcc6-d3282e0df438	null	null	1690360434430	null	155
+21c909e8-5745-43dc-bd46-fca06975cf82	null	null	1690360436817	null	156
+4cc78b56-6daa-49b3-b65f-557739ca2086	null	null	1690360437511	null	157
+7eafd6f7-9df8-4904-95dd-419a40fc1fac	null	null	1690361368460	null	158
+6e63f894-aec2-4cd9-9321-4d4e749133f9	null	null	1690361831808	null	159
+b825b78f-49d2-48d6-96dd-23a2b339678e	null	null	1690366635719	null	160
+a691fcd7-35c5-4e5b-8b70-c8d9c719f5b6	null	null	1690366638676	null	161
+e4cd19d9-9dbd-48ab-a94d-26639b93ae26	null	null	1690366640353	null	162
+8cf92adc-ac7c-430b-a095-7336c5d3db1f	null	null	1690366643959	null	163
+89033356-2ef1-4e3c-8d56-bde924119a02	null	null	1690366645326	null	164
+7fa2fbac-e63a-43ae-8bd7-c8db7ee7f0dc	null	null	1690366646073	null	165
+5936938d-67df-4cbd-bc09-a0c038891599	null	null	1690366663453	null	166
+05e7d962-6f1b-444a-abe7-8ceb194c6576	null	null	1690366681955	null	167
+3ba52ed0-9470-4125-9608-4020011a98f4	null	null	1690367424059	null	168
+45c1efea-b7e6-4c64-9826-ed9b047dc09e	null	null	1690367425385	null	169
+2671d7a7-d650-40f4-a46d-482d2f382507	null	null	1690368052934	null	170
+a5349931-d031-4f97-b044-ca85cb76d785	null	null	1690368171497	null	171
+d81090be-007b-420b-9cb0-0c5366fbb932	null	null	1690368541347	null	172
+b8167bf3-cb2a-4a32-bef3-ade9cf980666	null	null	1690368833142	null	173
+4af10c22-0bef-4ac4-931a-2d057412bc53	null	null	1690368836478	null	174
+f99b614b-4498-40e3-b037-a4c7dc5847f6	null	null	1690368840239	null	175
+761e2de0-7d9b-4864-99be-a28dc841c2e7	null	null	1690368841247	null	176
+d88febe5-68c7-4105-bcf6-3fc4ccaa0ec2	null	null	1690368842187	null	177
+686126e5-9086-4f1d-af33-c5e4ff0271ab	null	null	1690368849320	null	178
+b0222283-558e-4ec0-8fac-48c5e42abfb9	null	null	1690368908857	null	179
+faf1b22e-40ef-452b-8ed6-bff4238b7503	null	null	1690368974371	null	180
+6b6c6719-9aab-4d62-8c7d-875fb4adb64c	null	null	1690368976855	null	181
+20d3a25d-522a-49f3-b9ef-ffc19b5f3412	null	null	1690369958923	null	182
+af3b4ac8-8db6-4b06-bce5-9966c9eaa335	null	null	1690369962371	null	183
+3b51f90e-c2c0-4610-bb0d-d411cb8820a0	null	null	1690370076628	null	184
+926c76d0-7afa-4c43-a72d-71514540650c	null	null	1690370109948	null	185
+16b05730-2129-48fd-b061-d60a2fe1d719	null	null	1690370175296	null	186
+b5e65462-e778-4010-a23d-8b5c2681ca47	null	null	1690370198799	null	187
+0ac731f6-2a75-430d-85c6-e903b1d12aa7	null	null	1690370201557	null	188
+db965399-8d72-4595-83a5-e6013abd55f7	null	null	1690370270840	null	189
+ab255c58-f33b-4f16-9de5-4dcc0e8dab33	null	null	1690370346495	null	190
+1d2c9223-04f1-4397-9739-522fc838927f	null	null	1690370426723	null	191
+dcaee406-d5a1-4d0e-96d9-c73e9323081e	null	null	1690370442003	null	192
+594f0122-ae6c-4c9d-b629-4e584433e83e	null	null	1690370475530	null	193
+bb64c351-54c8-4420-a3c7-c89e79d08695	null	null	1690370507508	null	194
+6b227e3f-eb5c-4144-bbff-2afaed4bcd77	null	null	1690370536983	null	195
+14db1853-f41b-430b-ad38-18d0bc0c1228	null	null	1690370566626	null	196
+fbf84f81-fa65-4f6d-8056-6132c528530b	null	null	1690370582819	null	197
+ffdb4a09-2934-4cce-8008-a6fc0b22caeb	null	null	1690370600409	null	198
+7542530a-db4f-4ae4-838f-d7225c5e3abf	null	null	1690370625445	null	199
+2abef479-7e51-4b2b-aa92-8b423f5ad7da	null	null	1690370647471	null	200
+dcd181ee-8fc0-4fa9-9431-24524da295fb	null	null	1690370772454	null	201
+86628001-238d-4973-a38f-2cd60802f5d7	null	null	1690370827625	null	202
+4a26b382-1895-4766-ba27-55f10b300f5c	null	null	1690370846516	null	203
+27c3461f-948a-40e0-912a-1203e48acba8	null	null	1690370914786	null	204
+c6c38400-63ce-42cb-aa68-51ea5a81ffd3	null	null	1690370991519	null	205
+aa6d219c-7a0d-462d-946c-039b53e9fca9	null	null	1690371067424	null	206
+f21cb41c-e32a-4c0e-b348-2284bf2e5b85	null	null	1690371068807	null	207
+8f2c7b69-d124-461f-a775-976fad39e35a	null	null	1690371070673	null	208
+a418fe2f-e747-4638-beb6-52cbdf948dd1	null	null	1690371159913	null	209
+caabdf7a-0250-49f7-b842-ee1dc0cc78ef	null	null	1690371161031	null	210
+5712d003-589e-4484-9748-646801f0a4a9	null	null	1690371168262	null	211
+3a3880d8-9b8d-4b47-9e1f-24fa5e82411e	null	null	1690371195489	null	212
+1bd8203d-ead1-42df-bcb0-d95c0249e7ff	null	null	1690371218900	null	213
+e3b2522a-810d-4517-919e-e7ab5f8ea1b2	null	null	1690371235995	null	214
+42037561-8674-4f78-a0ab-acae31ca263a	null	null	1690371259243	null	215
+c4c2a2ef-01b3-40f1-91ec-be7e45f789c3	null	null	1690371279568	null	216
+09178ec5-e479-4f91-9907-20e4ea7b8b3a	null	null	1690371308873	null	217
+a5f9a8b1-c011-4045-b76b-7b6ee083ab05	null	null	1690371319069	null	218
+7dcc3d25-5cff-416d-a50a-a90832c8c618	null	null	1690371320115	null	219
+93baac55-3ee8-4ea0-a213-47a91a283390	null	null	1690371321120	null	220
+57eeb7f3-e7c1-4cd9-80ce-096e31b80066	null	null	1690372303338	null	221
+8dab25f1-2ef7-45b0-9ecd-b3ad197d067a	null	null	1690372305384	null	222
+3efe68eb-0f32-46f4-bd80-92d3636ec4c6	null	null	1690372451137	null	223
+035d6676-6eb8-4844-94ec-e2b4e5015ea2	null	null	1690372569428	null	224
+7b7a7cde-7ab0-40d0-9fe5-3898c7f5bb99	null	null	1690372616545	null	225
+776a0d69-2000-498e-830d-433ae6546d2b	null	null	1690372649418	null	226
+0ade0cc3-32b9-4d97-b4f5-96803c5d9a73	null	null	1690372732231	null	227
+5ec961f6-cd47-48eb-a3e2-23fdf1772fb3	null	null	1690372735460	null	228
+9aa1f286-42d3-4d04-a5a1-1360d66c312c	null	null	1690372737673	null	229
+9b960fde-5e60-4bcb-831b-4187e0905ca0	null	null	1690372744879	null	230
+40ff9e4a-b0b1-402d-8edb-7a1f21aaf895	null	null	1690373680793	null	231
+d8959544-4902-4106-bbe7-07182fedc6ef	null	null	1690373739156	null	232
+c14d8373-a46b-4b68-be78-736d0a71caa2	null	null	1690373836221	null	233
+156a52d2-c95c-4cca-a6ad-120575302aae	null	null	1690373876661	null	234
+9c992c41-46ec-4f92-a87b-d144b68ca457	null	null	1690373938764	null	235
+6dcf6b27-b070-471b-8d23-436c4ffd9fc4	null	null	1690373957755	null	236
+f9d9b186-dd17-4442-8371-c3093b75dac4	null	null	1690373993692	null	237
+4c2064b3-1b76-48f7-af75-d8e50a2c9a43	null	null	1690374040891	null	238
+0d86f680-54c1-47e2-b984-eb97a57949cb	null	null	1690374362079	null	239
+b9e9fdfc-2f53-4746-817e-2d08e48a8d6c	null	null	1690374408177	null	240
+768ed854-adb9-492e-ac3e-5845f59d2c22	null	null	1690374422656	null	241
+8269b251-e9c8-4179-b96b-2ccbea002e6e	null	null	1690374475687	null	242
+e101686c-65a4-4cc0-9d49-7850fc90389b	null	null	1690374495586	null	243
+a0aff22e-58c7-4928-9e5e-0dab2db855cc	null	null	1690374520650	null	244
+e79c4d2f-e8b8-4e8a-b09b-ae10283543f0	null	null	1690374609978	null	245
+c9543b9e-8d11-4c81-8993-d7e673ce273a	null	null	1690374834949	null	246
+c83d0cea-aaa4-4dc3-bff5-63b2c235acf7	null	null	1690374949011	null	247
+187685f0-3b44-48cc-9088-e9241cf8b156	null	null	1690374963420	null	248
+c80231e8-f668-461a-8d3c-de971361b299	null	null	1690374969140	null	249
+8d99ff49-2dec-4f99-818f-175bf0c33f4b	null	null	1690375038337	null	250
+ad94f449-7fda-4bfa-af55-94fc022f853f	null	null	1690375055202	null	251
+b8acad07-f0db-48db-92dd-05de636d1642	null	null	1690375165146	null	252
+c34a3e58-8d21-429b-a602-557002f2d878	null	null	1690375172161	null	253
+aeb6d2cf-8eeb-4217-bdd7-75814e1bee51	null	null	1690375319519	null	254
+c6457aa6-dc6f-4d9b-80d3-f1379d4eadd3	null	null	1690375323127	null	255
+5a8c6f2f-7201-4b71-895e-7c31f20c47b8	null	null	1690375324265	null	256
+62e94457-76e4-4119-936d-785e2840ac32	null	null	1690375711867	null	257
+0726f6c8-8675-4721-8b79-3adb0a494ab1	null	null	1690375785943	null	258
+50e7f69c-9ed3-4ff4-a476-89c7d27f84cd	null	null	1690375799876	null	259
+b616558b-f40c-487d-8be4-834fe7bfc786	null	null	1690375828217	null	260
+7b337f41-5f5d-42e0-a809-4e4a437313d1	null	null	1690375855898	null	261
+c386c128-bfc8-4305-b897-095938ef00cf	null	null	1690375931853	null	262
+8c665d1a-d920-4e36-bfe3-ab9656177ae3	null	null	1690375967069	null	263
+bae09b22-fb3b-4690-a471-8d8726f9946b	null	null	1690375980182	null	264
+3aeef202-b4a2-43c9-83d8-0628fd10c212	null	null	1690376032620	null	265
+256002f5-01aa-47bf-8ad1-348f854af9ea	null	null	1690376071837	null	266
+758df3ee-551d-440d-b83b-03bd0b86a1ed	null	null	1690376080319	null	267
+ed11e04e-1cda-4529-8a18-064d46bfdddb	null	null	1690376131427	null	268
+7975fa04-6a27-4c6d-ab19-6f914c076c7d	null	null	1690376135456	null	269
+4840e883-8f28-46ae-9316-2f7ce519055c	null	null	1690378436800	null	270
+01b23991-4e90-4750-a576-9be28b673db4	null	null	1690378440341	null	271
+43aa211d-3964-42f5-8cfb-4d2b53191b23	null	null	1690381504675	null	272
+02d7ac47-eefb-4e74-aed6-d056d1f62464	null	null	1690381507302	null	273
+9ce8144b-13e1-4995-b398-7b7de2dc1f68	null	null	1690381613666	null	274
+10abe210-c126-446a-9879-56be2c8e930e	null	null	1690438333609	null	275
+1db10180-1822-4fc5-aee0-474be8903df2	null	null	1690438337050	null	276
+962796c7-18b7-404c-b8ed-60b9b0506580	null	null	1690438491469	null	277
+01a4dc79-70e4-4d45-8826-10bbc9acfe38	null	null	1690438601052	null	278
+8dc2f5c1-20a4-4b93-8bff-83d11251eb96	null	null	1690438604733	null	279
+3abb9873-54e5-4104-9869-cf1aabdf3f10	null	null	1690438612909	null	280
+d118edc1-f9c7-4559-ae1a-6430e6fece1d	null	null	1690438678418	null	281
+30ab201e-f454-4b25-b2ca-09f69d474b16	null	null	1690438680706	null	282
+7866ed68-4427-414b-ae84-4a962cda536b	null	null	1690438681397	null	283
+20e8967e-eced-4f12-98ad-8545927d5aef	null	null	1690438685548	null	284
+a6967a72-8052-4aaa-84f9-a1ab1e2e7c67	null	null	1690438700162	null	285
+a6f6124b-1e48-4d3c-9dc8-d7711c85884f	null	null	1690440464292	null	286
+acb9b623-eb85-4c41-9f50-c3016176950d	null	null	1690440516752	null	287
+3a9fcb92-f97c-4dd7-9913-edef983fe092	null	null	1690440520540	null	288
+37b53584-f17d-4387-80f6-2131503bfb04	null	null	1690440539568	null	289
+9ccb212a-e48b-4f92-8063-a9c69ee2fb54	null	null	1690440642380	null	290
+92606a28-c411-46e2-8874-ec36e6e4be79	null	null	1690440644807	null	291
+7ba3190d-d85f-43f4-8f53-11821c36eea7	null	null	1690440646369	null	292
+c462622f-b21e-4992-818d-a04f3ca2b4ba	null	null	1690440727943	null	293
+109b2d0d-9ccc-44e9-a3a7-c2a6cb4aef18	null	null	1690441082160	null	294
+e76a672a-fd4d-409b-8898-f224d098e8f3	null	null	1690441671307	null	295
+a55d1099-7824-49d5-9a1a-e1fd6f61c1e5	null	null	1690441780021	null	296
+30ee9a4e-4b6d-4d9a-b603-d70a58158fe6	null	null	1690441784759	null	297
+6b41f9ea-3a0a-425c-b9ab-22a509ed8a46	null	null	1690441790267	null	298
+21e5869f-a0bc-453e-a2a7-f10c6e4cd652	null	null	1690441814799	null	299
+4b27fc5d-5e36-49a6-ab0c-9d042ca039f9	null	null	1690442073399	null	300
+c8ef5d53-9bd0-4d9d-bd20-944c2f58cbb9	null	null	1690442081950	null	301
+3b918774-fe83-457a-a174-e1293e8d4b3a	null	null	1690442180340	null	302
+99eafb88-7d52-4bb9-a678-861482bacce9	null	null	1690442182777	null	303
+d0ec87d8-b655-4af5-a9ef-3d37ea4b40ac	null	null	1690442217986	null	304
+f6f6f19e-71ab-4117-894b-f72b0814efe8	null	null	1690442223107	null	305
+d33042ed-22d5-4f76-815f-e95866ad5d4b	null	null	1690442239369	null	306
+76e3af6e-5cb1-4d88-af27-6f6d4d1bdc8b	null	null	1690452890068	null	307
+2bdda183-e02c-465f-ba46-53c4e340132b	null	null	1690452895585	null	308
+05fbc53c-d88d-4e4c-94ed-a7400cf7d9d1	null	null	1690452970881	null	309
+2030f85b-4cb3-498d-98fd-692f973a076b	null	null	1690452992560	null	310
+c35145e2-fe14-4e75-8772-5d59c61df950	null	null	1690453115503	null	311
+d6ded939-3150-483d-83b8-7cc8ff26f991	null	null	1690453286500	null	312
+b645bfde-3d21-4b3a-8c8b-b3d214c9eb5b	null	null	1690453298793	null	313
+638c6b5e-fb09-4835-abda-eff91956caa9	null	null	1690453346006	null	314
+53be35d8-0b86-43d7-a2ac-3c381f9fa12f	null	null	1690454612899	null	315
+6bdb0ed3-0147-49bf-92c3-733a139341f9	null	null	1690461231115	null	316
+e9785bb4-2b46-4ac1-bf85-309a838f5052	null	null	1690466687182	null	317
+412f8392-2e66-4e48-a7d8-5f001cd58e50	null	null	1690467043082	null	318
+a942f20a-baa9-431b-b2de-1c21db0a8cb3	null	null	1690526567767	null	319
+04f20757-2794-411f-a166-cc874629de46	null	null	1690527229810	null	320
+ee510573-1acf-4b26-83ed-dfaddec522d3	null	null	1690527488959	null	321
+9b8324af-7eea-413e-b065-284118d6c42e	null	null	1690530297927	null	322
+0b6482ae-ecee-4cc3-8d59-4eb012ac7ac9	null	null	1690530366673	null	323
+ab8f511c-b450-47b9-846f-d0dcdb97ef7b	null	null	1690531137800	null	324
+9dcf63af-4d80-40c9-9fe9-a229f91e863a	null	null	1690531209232	null	325
+1a4ab559-10d6-4f4a-b64c-438b675f2fae	null	null	1690531420208	null	326
+24aa8248-d1ea-4edb-8c17-325c23f8fe2f	null	null	1690531679845	null	327
+159d1ea0-f2e1-44f1-a9c2-d29c33573a3a	null	null	1690532130885	null	328
+42a8fb9f-b945-4df9-bce9-462f27e352f2	null	null	1690532310576	null	329
+4b2c9fe5-7cfa-42ee-8df1-d365e72cca43	null	null	1690532899337	null	330
+09b928ef-0daa-45d1-a8e9-240c457aab52	null	null	1690532906743	null	331
+357a403a-45a2-4e82-83dc-b5af31bb791f	null	null	1690533095880	null	332
+a0abd590-2a6d-49d0-954b-fc3a270af831	null	null	1690533179239	null	333
+e2e17e37-990f-499c-87f8-a2dc724dd6d2	null	null	1690533265040	null	334
+42be4658-a04e-4440-927a-c6749f26c0cf	null	null	1690533358012	null	335
+cf77d2df-c5d6-4eef-b2d1-d905bf1a935f	null	null	1690533682196	null	336
+4b3c2eb1-77c9-460e-95d8-72503b923a09	null	null	1690534011974	null	337
+fec7f49d-76f1-4422-9068-59357265f9de	null	null	1690534075988	null	338
+6d84f9a6-e580-4529-b7e9-bd6389d5e670	null	null	1690534083183	null	339
+a2df2f59-a820-43aa-934f-50fff4075342	null	null	1690534673398	null	340
+775a117d-4858-42c3-92e9-74f315152349	null	null	1690541018517	null	341
+9c1c739b-c754-457f-8141-a4b97d7e74d2	null	null	1690541143200	null	342
+564a55aa-7852-48a3-bcd1-f7e9b8aed3ad	null	null	1690541380242	null	343
+e928bb93-c222-432f-ab6b-b31f07a575b8	null	null	1690541512665	null	344
+49d3b85f-e6a7-428c-bdad-c0c90d9bf41b	null	null	1690541533606	null	345
+873a3436-c3cd-4f52-a891-c95f9acdc738	null	null	1690541696769	null	346
+117a7ff8-9672-4a0c-b716-1f3b8b57a3dc	null	null	1690542466097	null	347
+b18698d2-017c-46f1-bd0a-a16583ea09bb	null	null	1690542479970	null	348
+cc4615ca-a245-4b7f-adc4-cc68817ec50d	null	null	1690542508285	null	349
+e37da060-d380-473e-b2f6-9dd1f8786f6e	null	null	1690542535252	null	350
+d5f05a8d-e06d-40ff-8aaa-02153f89196c	null	null	1690542784984	null	351
+9bec5a16-be3e-43db-84c2-9993298df0c3	null	null	1690542804932	null	352
+3588622e-c714-443a-bf4c-1fa7422244cf	null	null	1690543196033	null	353
+efbe3f38-b5b8-403d-9b44-506e641c96aa	null	null	1690543539579	null	354
+b026ba49-870f-4c19-9376-ec1f6d20fa67	null	null	1690543616593	null	355
+836b6f92-3eb5-4975-b770-d82b451ca410	null	null	1690543688413	null	356
+cd5c3a27-3000-4d44-8923-d18144d8577f	null	null	1690543958072	null	357
+1ffd787f-3ea8-46e2-b039-1e46569ea33c	null	null	1690543994881	null	358
+3e66a800-bd5c-40a7-a98b-327b3baba756	null	null	1690547606090	null	359
+60710817-166d-46c0-8e9a-467d1256f428	null	null	1690547646453	null	360
+145c5ed1-1c3d-4d2c-9fd2-749606a9d301	null	null	1690547660629	null	361
+d67acc27-8082-4fb8-9b33-2e708a6b6e12	null	null	1690547708152	null	362
+ec0c1e30-034a-47a8-9fa7-11d3bb22f6a4	null	null	1690547722862	null	363
+e4645a59-7ae9-495e-90b1-cae3cf9d1e15	null	null	1690547777709	null	364
+cbcd5a1d-21c1-4438-90c7-730bd47996af	null	null	1690547805748	null	365
+ce30aa00-2862-4bf1-b4f2-224da904eb95	null	null	1690547921531	null	366
+6df56e3b-b3bb-4bd6-8c35-66a9b3df289f	null	null	1690547957045	null	367
+780a0f22-11e6-4269-ac96-48d9c705ea38	null	null	1690547963336	null	368
+1a5cd19c-6001-4e97-a4c0-d339aea065b8	null	null	1690547971832	null	369
+96b8a030-9d04-452f-8567-e9b1da079d4c	null	null	1690547988729	null	370
+c321f168-30c3-45de-8d48-627f4f728ca2	null	null	1690548001077	null	371
+a2759314-ee50-40e2-8f13-82dbeceb61ea	null	null	1690548006446	null	372
+b14871dc-f833-4f60-aadb-acf3828233a4	null	null	1690548014441	null	373
+931f6e78-a349-4b55-b308-fd054004b130	null	null	1690548028407	null	374
+dd02bf97-a9b8-4712-96b1-fdc88917b72e	null	null	1690548036146	null	375
+db1f26bc-d094-48a5-924b-bd99f06397c2	null	null	1690548061252	null	376
+3bbec086-8002-4a93-ad74-99f56c55efd6	null	null	1690548069474	null	377
+1c0babd3-c5fa-4980-ad29-688407bad6b6	null	null	1690548088358	null	378
+a9d351f7-e8bc-4f0a-950c-3a4c5910bf46	null	null	1690548092010	null	379
+67151d49-30d7-40fc-9234-a54ec7ee0ca4	null	null	1690548106959	null	380
+b1a96286-7440-46f5-a76b-2829ecfb5e40	null	null	1690548131004	null	381
+8d48457a-556a-4732-ba37-4a5af657abeb	null	null	1690548135297	null	382
+fe530510-12d7-405d-be57-2307f7ce9a18	null	null	1690548302531	null	383
+2d439357-f36b-4bad-b97a-4d32d6cd9d8c	null	null	1690787924946	null	384
+7c583a29-31e6-436c-b404-a48d77791f3b	null	null	1690788548679	null	385
+1ce5dda8-ba90-4753-b4b4-67985374f8b9	null	null	1690790898807	null	386
+35afc337-3906-462f-8d4d-fb0b7c0e7698	null	null	1690790913712	null	387
+3d4707ce-7d4a-4f8d-89be-47a2e65f4be3	null	null	1690790953470	null	388
+76893659-06b2-42e8-828a-edadb0fcfeee	null	null	1690790957990	null	389
+93b0d21a-1e63-4e8b-b921-319e3440b45e	null	null	1690790993830	null	390
+11f86cc0-a94e-4896-b495-0253e67318fd	null	null	1690791681250	null	391
+e05deeaa-e722-4ecb-a4e8-f4c17efad831	null	null	1690791762631	null	392
+26ac7924-e44a-48c2-bc4e-aed5fbd394cf	null	null	1690791779617	null	393
+490d76bd-cade-4d1c-8230-ad0e6130b536	null	null	1690791791358	null	394
+80647c25-9e8a-4530-be17-f992d19171b7	null	null	1690791810931	null	395
+e1a4c99d-9f52-4138-8954-3e270aff2ff2	null	null	1690791812340	null	396
+03620a1d-d830-487e-aa6c-a27071497290	null	null	1690792118522	null	397
+c9f9653c-100e-4b47-98fd-19a1933c28e3	null	null	1690792161348	null	398
+c49742dc-ee03-484a-8cb0-77a8760586a9	null	null	1690792177185	null	399
+b2cde1aa-4e8e-4b2a-92a6-8ebde623fdee	null	null	1690792237104	null	400
+58f14838-197b-4fa8-87e2-fd23162d437b	null	null	1690792435335	null	401
+a0a39f5f-223b-42d9-a6d1-f5c6cc9113a6	null	null	1690792467263	null	402
+a6f6c38d-761b-4e7b-b199-5a30cb1dc4b7	null	null	1690792482425	null	403
+29049dca-8e5f-42ec-abda-5f3f41ba0433	null	null	1690792717015	null	404
+384bf778-beb1-4d09-b242-b4167b640a00	null	null	1690792723327	null	405
+185dbc62-a614-4e35-af7b-ff4af907511f	null	null	1690798112902	null	406
+df929fb5-27b8-44ee-8ef7-28396d5d1456	null	null	1690799885751	null	407
+b75f567e-4a05-4bd7-aa00-2fd88c74d904	null	null	1690799955187	null	408
+6c4c86d5-367e-4444-b7e1-9360de26345d	null	null	1690800159890	null	409
+2d38cfe0-8ba5-42b3-b6d2-7b7a7f3e2db7	null	null	1690800555698	null	410
+f71cea88-1b1e-4ea6-bb7c-eac2d988dd3b	null	null	1690800631994	null	411
+91b1dd5a-d80d-41ef-a7fa-cdcb8312ea7a	null	null	1690800678714	null	412
+2dbd065e-ccd3-4860-9fae-2f08070b3a71	null	null	1690801113518	null	413
+f1bfe8dc-1fbd-470e-93f1-3246d219b043	null	null	1690801115198	null	414
+1ccbe770-1fb8-4590-bbaa-488ce8f1a871	null	null	1690801390375	null	415
+3568f3e9-a3f5-44e3-9ce8-298bef510dbe	null	null	1690801391565	null	416
+84b5f900-bfa7-4bcf-9744-7dfa69942115	null	null	1690811920371	null	417
+e1f76bd5-d3db-4a05-be81-025a4d188aaa	null	null	1690872324283	null	418
+a42fb329-9b32-491e-a512-25d086b43898	null	null	1690872325227	null	419
+ad7860e7-bbae-49f2-97a1-1d5df0e4a707	null	null	1690872325404	null	420
+b2eb09dd-153c-4844-a91c-5159ccf9fa31	null	null	1690872325547	null	421
+9203cc79-0812-485b-9533-4c4127706519	null	null	1690872325749	null	422
+5c55a6ea-a9fa-4094-9c19-e4536ed977ba	null	null	1690872537051	null	423
+8259ad27-50c2-440c-a228-4b995f076f05	null	null	1690872596652	null	424
+b3fcdf51-8ca7-4147-9f2b-7f9984cb6407	null	null	1690872615614	null	425
+c6d69144-92ba-4e1b-9ca2-3bd527051009	null	null	1690873063821	null	426
+6d03af9f-c5fe-47ea-953b-1d4c904792ce	null	null	1690873064550	null	427
+16881efa-d799-4acf-ad7e-ac231f890711	null	null	1690873070021	null	428
+6d51db68-5ddc-45a1-97db-540ae4bce858	null	null	1690873070285	null	429
+97d46cf4-f247-4dd6-91bf-069983a3cd0e	null	null	1690873070473	null	430
+a6c2a9cd-9975-4d18-9d85-c56e2c3a5e17	null	null	1690873093399	null	431
+edd5fb77-2e73-4490-9940-bd5f6a14e675	null	null	1690873161050	null	432
+f04c6e15-505c-4ccd-a317-a78829a08fc9	null	null	1690873274645	null	433
+4b6ceaed-addb-430f-96b7-78c51b4c8fef	null	null	1690873365537	null	434
+70f3e47f-b47a-4b8e-b058-50c9e8de630e	null	null	1690873383569	null	435
+4ea1f954-a4d3-491f-8a47-c891e4ed3372	null	null	1690873666286	null	436
+61010913-00f9-40b0-b497-e83b62da4fc8	null	null	1690873677628	null	437
+c6295a92-740a-4de6-b810-082c1f5ee215	null	null	1690874098135	null	438
+eea6fd4c-3278-4d40-80a4-9ca3208aa6de	null	null	1690874098549	null	439
+87969cb9-7797-4e8f-91c4-ac21e6a805be	null	null	1690874098712	null	440
+ac46142f-ab1f-4f0e-8f09-fa03cb8e5902	null	null	1690874226626	null	441
+9f85c721-a650-4578-ba2a-05c63121cd05	null	null	1690874320048	null	442
+4ab33909-e899-4a07-a6d9-97cd2b9e0c85	null	null	1690874376375	null	443
+8bd56407-8692-4de2-91a4-37e6c565f57f	null	null	1690874445949	null	444
+115b7672-531f-4cf8-80fd-ca1c4ca72d70	null	null	1690874478545	null	445
+9fd7e9e4-dafc-4e21-a257-85e0ad8fb0c2	null	null	1690875652773	null	446
+addf0ecc-1f00-4cf7-bcae-43e0b805510c	null	null	1690875812470	null	447
+2ed4b973-84d6-416e-97c9-14aecb0ae9fa	null	null	1690875848456	null	448
+9574a047-a21b-41b6-9df3-be96a8ab9a9d	null	null	1690875926570	null	449
+ffe931c5-60e3-4e33-af6b-0c8553583fc3	null	null	1691395556296	null	450
+7a608759-279f-4a7a-9590-a30c494ac1b6	null	null	1691395766817	null	451
+2d97ad66-f48b-444e-b415-95961218912e	null	null	1691405784508	null	452
+7ab11868-329f-4131-8dd5-f04ec4f6f06c	null	null	1691405790495	null	453
+7f95a2ed-3003-4a78-a066-1c8e1f20b068	null	null	1691405800959	null	454
+c15a312f-281a-4875-89bc-409200c6e07b	null	null	1691406218731	null	455
+f9b99086-6d22-45d3-b78b-fc3727e639d5	null	null	1691406257642	null	456
+06c5c3cf-9a17-4fd4-8a0f-438b05bc6939	null	null	1691406315600	null	457
+6f46c46f-5126-4a91-b386-7ff45d3db7ce	null	null	1691406362379	null	458
+064cbf4d-f586-4bfe-ad55-f2020cf86b33	null	null	1691406376413	null	459
+6b3a355a-8128-4ee4-b5ef-4794a2532e1b	null	null	1691406399222	null	460
+06576f2b-242f-4f53-a5e7-5a071f9c6260	null	null	1691406597016	null	461
+68adb2e9-de26-4da3-b9a2-121b15b5bc65	null	null	1691407110417	null	462
+7c0ef21f-637a-428b-a7e3-0977a3f217c7	null	null	1691407122265	null	463
+ce5bde25-e06c-49ec-aa28-03bda6ce3481	null	null	1691407161833	null	464
+1fedcc90-4476-486c-9d73-5039c3be9ddb	null	null	1691407604377	null	465
+a2d57198-c458-407d-aae4-ddef8025f135	null	null	1691407620915	null	466
+ec42a5ec-b1fc-404d-841c-12bf4327ca6f	null	null	1691407878156	null	467
+3dc629bf-7864-4bee-a1f0-056b27539ee2	null	null	1691408015752	null	468
+cb1f7775-de3a-46df-a50d-3c449fdf300f	null	null	1691408034963	null	469
+725797ba-3037-436d-bc85-7ffa2751c9be	null	null	1691408171352	null	470
+0d835c1c-efc7-4a0f-8958-641763a532f6	null	null	1691408271836	null	471
+8be497e4-832d-4fe2-8c2c-31c280e2b5c1	null	null	1691408363798	null	472
+3126b52d-a382-4d17-8c6c-89b7f5119808	null	null	1691408376168	null	473
+97b7fdc9-9cc8-4389-a11e-b85f7261a374	null	null	1691408411146	null	474
+d827c1d7-d2c7-47a8-9158-6d7f81e2a219	null	null	1691409024033	null	475
+f372b2a4-fd2a-4900-bf14-3ae120d34e38	null	null	1691410675483	null	476
+936adf04-2830-4e73-a808-684277e24c80	null	null	1691410741684	null	477
+d26aa824-935c-4761-8549-70718a7e8676	null	null	1691410823283	null	478
+db8ad2e3-fbd1-422e-91aa-62c3eb1a69c4	null	null	1691410896905	null	479
+dd9bd789-bb89-4a52-8512-cd7629635027	null	null	1691410913015	null	480
+c1524edc-e2df-4ae1-ad9b-3a333b4eed20	null	null	1691411010031	null	481
+5e0fbbfe-1d82-4f40-ab18-8a63ade46324	null	null	1691411125578	null	482
+017921cc-e4c1-49d5-be56-ddd14d96f228	null	null	1691411292584	null	483
+28ab8d89-2e5e-4ce8-8baa-6ba975a7f016	null	null	1691411323384	null	484
+be0f9ee3-79c9-4eec-ac26-59b49301d15c	null	null	1691411332431	null	485
+bbeb024b-d71a-47db-a6cf-45cb96dbc719	null	null	1691411344848	null	486
+e3940158-0923-407e-a293-222a6f9b09ba	null	null	1691411362036	null	487
+850f2a02-082c-43b9-9654-d8eae699c139	null	null	1691411367425	null	488
+5a33709b-01ec-4786-997e-d3aa33d6ae23	null	null	1691411683422	null	489
+59cf3074-f149-44d9-b036-665feffe8e15	null	null	1691411697792	null	490
+4ee3e3f6-1119-4f26-9664-26f7d0e0696d	null	null	1691411727270	null	491
+1c5b72aa-2338-4233-8234-eb3633cfb9f2	null	null	1691412346824	null	492
+7495cbe9-2d54-41bd-ba13-4cc3cb81ffab	null	null	1691412353975	null	493
+72f7d2b1-833a-4ae8-8107-ca65cd08f708	null	null	1691412827281	null	494
+d7aaf041-a1a1-44da-82dd-6a4cad3921d1	null	null	1691412868323	null	495
+77a8f30e-1e02-4ad7-b179-abdd8273ffc3	null	null	1691412922076	null	496
+89b92812-16e3-413c-92ee-5a2ec9772b0f	null	null	1691412932730	null	497
+e4c49357-a9d1-407f-b5ce-f3f131a0e8d0	null	null	1691412991127	null	498
+791cf106-8b61-401a-806a-979b24e6754d	null	null	1691414132858	null	499
+f5b82452-eaec-491c-9fbe-d9b8247893aa	null	null	1691414765440	null	500
+7eef7300-314a-4aa7-a59e-6730f63cc378	null	null	1691414778626	null	501
+244aef8b-b11b-4b56-a4f3-aa833034c7c6	null	null	1691414799415	null	502
+483f7f52-567f-4d3a-b62c-476b7726827f	null	null	1691414824811	null	503
+0cce4eaa-4f0b-4dc8-90d0-04da25a8194f	null	null	1691415085041	null	504
+3b319ba3-917a-4acf-abb7-3d90d4b82438	null	null	1691415164051	null	505
+17c25cba-7ffd-4230-a894-44bc0b829a97	null	null	1691415171203	null	506
+89dffeb1-583b-454a-989c-44c3beaf742e	null	null	1691415177319	null	507
+d16ceb40-d768-4259-a663-d2c075e02644	null	null	1691415192473	null	508
+52e9d511-05ef-47a5-b328-73620b8293c2	null	null	1691415199405	null	509
+bc930f98-9376-4822-910e-bec208d1cd38	null	null	1691415217200	null	510
+cf0e5c67-82f5-4dd4-bdca-e6cf60c6589b	null	null	1691415223317	null	511
+1b510078-ccb1-473d-83a2-1dfb51fe1f6d	null	null	1691415290093	null	512
+5dc8a8e7-a377-4f9c-a14e-a35d6c361ac1	null	null	1691415394499	null	513
+446e2bf0-3487-418b-a61c-7fb95d554616	null	null	1691415681419	Чтение	514
+daf6329f-8497-4b5f-8bd4-40f895ea8067	null	null	1691415809827	null	515
+711eb03b-368c-4d8f-bb66-033905e51a30	null	null	1691415845429	null	516
+97f78a0f-5903-408c-8300-f75d2b7eb414	null	null	1691416005154	null	517
+85f1cc59-d7f9-40a1-91ad-bcd30e74e4ad	null	null	1691416065777	null	518
+4f8a27cd-c655-4b16-9e85-47c428a63004	null	null	1691416181032	null	519
+c2b979eb-d681-4f78-a8b5-7eb5c99742e9	null	null	1691416613984	Чтение	520
+16d33157-9043-4937-840a-b56eae04c89b	null	null	1691418435018	null	521
+b6b9986b-d228-405f-a767-eff3ff639add	null	null	1691564583160	null	522
+bbf8d17e-6b4d-418b-8fb6-de15307f08e9	null	null	1691564596013	null	523
+e9f78c6c-b63a-4e6d-bc87-57404a10144a	null	null	1691564694767	null	524
+276e8413-4427-4627-8c7b-010aeb7f3eb7	null	null	1691564910293	null	525
+6e9b439f-41ee-42d7-bae9-c19be35e19a8	null	null	1691580657389	null	526
+b7156624-fa33-4f0b-a913-d254a5c700cd	null	null	1691580664482	null	527
+7f270543-df6a-44b8-9f74-a74fb1c468d4	null	null	1691580674247	null	528
+9ce96844-20df-48a9-8300-4eb5afe73bd7	null	null	1691590057201	null	529
+\.
+
+
+--
+-- Data for Name: user_entity; Type: TABLE DATA; Schema: public; Owner: auth
+--
+
+COPY public.user_entity (id, email, email_constraint, email_verified, enabled, federation_link, first_name, last_name, realm_id, username, created_timestamp, service_account_client_link, not_before) FROM stdin;
+d89bdf99-9ef6-43e8-aa55-a231a61b0400	\N	90f768ff-098d-4305-a46a-dd7ce2947912	f	t	\N	\N	\N	1dcdeb83-cb4e-4a1c-b66c-066aec2fe25a	keravt	1679575204548	\N	0
+5e30d3ad-15b0-48e5-83df-523d59fe2684	jesus@jesus.jesus	jesus@jesus.jesus	t	t	\N	jesus	jesusjesus	test-realm	jesus	1682432038711	\N	0
+fbbbbefb-2135-4fbd-b8d4-8a58af29322d	rosa@rosa.rosa	rosa@rosa.rosa	t	t	\N	rosa	rosarosa	test-realm	rosa	1684766022979	\N	0
+68b3d4fe-8b95-473b-9717-b72d62dcf9c9	manin@manin.manin	manin@manin.manin	t	t	\N	manin	maninmanin	test-realm	manin	1684766056053	\N	0
+23a247bf-65ce-4f61-9c0b-2112a55712b4	bmd.keravt@gmail.com	bmd.keravt@gmail.com	f	t	\N	Максат	Байрамгельдыев	test-realm	bayramgeldiyevmd	1684843131797	\N	0
+7e5693a0-e8ad-4d71-a93a-190e83952077	bda.keravt@gmail.com	bda.keravt@gmail.com	f	t	\N	Даниил	Богатов	test-realm	bogatovda	1684843317712	\N	0
+c91068b4-3445-46c6-8694-5d72993bda87	err.keravt@gmail.com	err.keravt@gmail.com	f	t	\N	Роза	Ермолаева	test-realm	ermolaevarr	1684843432675	\N	0
+2f118e26-475c-4e20-8bc1-8d5dbf6dd782	gin.keravt@gmail.com	gin.keravt@gmail.com	f	t	\N	Ильдар	Губаев	test-realm	gubaevin	1684843562622	\N	0
+cbffa0e8-f26f-4898-a134-5fdbb1908478	kne.keravt@gmail.com	kne.keravt@gmail.com	f	t	\N	Наталья	Куницына	test-realm	kunitsynane	1684843640220	\N	0
+2946ec8b-1229-45d0-9576-21b8ccb0e5bc	mev.keravt@gmail.com	mev.keravt@gmail.com	f	t	\N	Евгений	Манин	test-realm	maninev	1684843716798	\N	0
+d9523b97-47e8-4c10-af77-8aeed51ab7bb	sra1.keravt@yandex.ru	sra1.keravt@yandex.ru	t	t	\N	Равиль	Снагатуллин	test-realm	sra1.keravt	1688554478998	\N	0
+6dde0034-a558-48e3-b2e2-b82e7a5f82a5	sam.keravt@gmail.com	sam.keravt@gmail.com	f	t	\N	Айнур	Сабиров	test-realm	sabirovam	1684843871495	\N	0
+977e5710-5bc9-448a-acb9-42e2597f8709	sir.keravt@gmail.com	sir.keravt@gmail.com	f	t	\N	Ильшат	Садыков	test-realm	sadykovir	1684843951527	\N	0
+621b8419-f988-462e-a8b4-90f501e93f25	dmitriychmykh@mail.ru	dmitriychmykh@mail.ru	t	t	\N	Дмитрий	Чмых	test-realm	chmyxd	1688641240649	\N	0
+fff67005-26b9-4e07-aedb-d904f8dddc0d	sra1.keravt@gmail.com	sra1.keravt@gmail.com	f	t	\N	Равиль	Снагатуллин	test-realm	snagatullinra	1684850069803	\N	0
+ac40c164-9bb5-4ad8-bb95-7ef869f928af	ldl.kervat@gmail.com	ldl.kervat@gmail.com	t	t	\N	Дмитрий	Леонтьев	test-realm	leontyevdl	1688641980944	\N	0
+484ecf52-e2da-4353-8b18-a525d85c5c29	urv.keravt@gmail.com	urv.keravt@gmail.com	f	t	\N	Руслан	Унгурян	test-realm	unguryanrv	1684850160583	\N	0
+3aa7e54f-2d24-4a30-8c63-d4be9701f8ce	kri.keravt@gmail.com	kri.keravt@gmail.com	t	t	\N	Рамиль	Касимов	test-realm	kasimovri	1687432737070	\N	0
+0bdce5da-f54b-4a99-9a55-9136f0500c63	pashacsriskal@gmail.com	pashacsriskal@gmail.com	t	t	\N	Павел	Рыскаль	test-realm	ryskalpv	1689064379322	\N	0
+79e4b95f-3b02-470e-be7f-1a0857c97b68	22@r.ru	22@r.ru	t	t	\N	Бизнес	Аналитик	test-realm	bisan	1685527616780	\N	0
+466b87d0-43f9-4cc6-9d39-3f054589451b	33@r.ru	33@r.ru	t	t	\N	Глава	Отдела	test-realm	headofthesd	1685455413624	\N	0
+2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6	user@user.uer	user@user.uer	t	t	\N	Юзер	Юзерный	test-realm	user	1679576144124	\N	0
+25d817a5-cbb4-4c19-a1b3-7e056ab181d8	lta.keravt@gmail.com	lta.keravt@gmail.com	t	t	\N	Тимур	Латыпов	test-realm	latypovta	1687432958077	\N	0
+c3f4151a-dde6-462a-9cc6-cdc67e74f327	sdv.keravt@gmail.com	sdv.keravt@gmail.com	t	t	\N	Денис	Сагидуллин	test-realm	sagidullindv	1684844018641	\N	0
+daae7bbc-20d7-465e-b3fb-9ffcbd8d16c4	mmf.keravt@gmail.com	mmf.keravt@gmail.com	t	t	\N	Мурат	Марсиапов	test-realm	marsiapovmf	1687433065416	\N	0
+3f0abba2-acfd-4654-8933-bea060fc3a84	add.keravt@gmail.com	add.keravt@gmail.com	t	t	\N	Дмитрий	Акмаев	test-realm	akmaevdd	1687415640579	\N	0
+e254fd04-7ea1-47ea-9807-72f3d305a8bd	mrd.keravt@gmail.com	mrd.keravt@gmail.com	t	t	\N	Регина	Мухаметдинова	test-realm	reginamd	1687427815109	\N	0
+a4c1b05a-ec81-4931-b24a-1824518ff3b5	bsm.keravt@gmail.com	bsm.keravt@gmail.com	t	t	\N	Саид	Боков	test-realm	bokovsm	1687430620758	\N	0
+3d976ce8-0ea7-46b0-8c18-95e13aec2a33	bvi.keravt@gmail.com	bvi.keravt@gmail.com	t	t	\N	Владимир	Бурунин	test-realm	buruninvi	1687431267504	\N	0
+5876117d-e688-4a5a-953b-6a6109d16480	vea.keravt@gmail.com	vea.keravt@gmail.com	t	t	\N	Эдуард	Васильев	test-realm	vasilievea	1687431952167	\N	0
+cd842471-191e-495f-b190-6b9488ef6a5c	gdf.keravt@gmail.com	gdf.keravt@gmail.com	t	t	\N	Дамир	Гайнутдинов	test-realm	gainutdinovdf	1687432551524	\N	0
+69a05450-3943-4769-a076-d9549810e6ad	mir.keravt@gmail.com	mir.keravt@gmail.com	t	t	\N	Ирек	Мужеков	test-realm	muzhekovir	1687435852064	\N	0
+ba1c6ee5-8d41-4fd0-bdb4-3f05c472203b	nvr.keravt@gmail.com	nvr.keravt@gmail.com	t	t	\N	Виктор	Нигомедзянов	test-realm	nigometzyanov	1687436040680	\N	0
+efd25043-d9e0-431f-b641-597c5e3683e8	rra.keravt@gmail.com	rra.keravt@gmail.com	t	t	\N	Рамиль	Рахимов	test-realm	rahimovra	1687436170980	\N	0
+d56e823f-c21c-41c7-aa87-6d28dca6f11c	sni.keravt@gmail.com	sni.keravt@gmail.com	t	t	\N	Никита	Сатаров	test-realm	satarovni	1687436365983	\N	0
+0ce1529a-7ce3-4d5d-a1fc-5deebcfaf45c	suleimanov.aat@gmail.com	suleimanov.aat@gmail.com	t	t	\N	Алмаз	Сулейманов	test-realm	suleimanovaa	1687436485529	\N	0
+8a3505c8-f7e3-49bf-9f21-9e6a50421de6	unn.keravt@gmail.com	unn.keravt@gmail.com	t	t	\N	Никита	Улитин	test-realm	ulitinnn	1687436593770	\N	0
+1a6aec3b-95da-4b7f-bba3-71d2ad8b154e	fdo.keravt@gmail.com	fdo.keravt@gmail.com	t	t	\N	Дмитрий	Флегонтов	test-realm	flegontovdo	1687436773998	\N	0
+a897bd98-6fb7-442f-a2c7-a99cfdbd11e5	kbr.keravt@gmail.com	kbr.keravt@gmail.com	t	t	\N	Булат	Хабибуллин	test-realm	khabibullinbr	1687436920177	\N	0
+d40c0870-2174-4115-85dd-deac479af196	gin@uesavt.ru	gin@uesavt.ru	t	t	\N	Ильдар	Губаев	test-realm	gin@uesavt.ru	1687441376176	\N	0
+eb349091-7365-4f46-914f-eaab06d9bfaa	11@r.ru	11@r.ru	t	t	\N	Отвественный	Ответственнин	test-realm	responsible	1685362854463	\N	0
+9f9eb61e-d08a-4d3e-8caa-a78a455287fb	rva.keravt@gmail.com	rva.keravt@gmail.com	f	t	\N	Владимир	Рыскаль	test-realm	ryskalva	1684843792488	\N	0
+51cc7862-dfbc-452d-bf6a-d530d361eae0	erb.keravt@gmail.com	erb.keravt@gmail.com	t	t	\N	Руслан	Эмирусайинов	test-realm	emirusayinovrb	1689072478845	\N	0
+e8b8af8c-57a8-41af-8670-d60c837441af	rva@uesavt.ru	rva@uesavt.ru	t	t	\N	Владимир	Рыскаль	test-realm	rva@uesavt.ru	1689769124366	\N	0
+1fd699e8-1502-4edb-9f0e-89172308b807	urv@keravt.net	urv@keravt.net	t	t	\N	Руслан	Унгурян	test-realm	urv@keravt.net	1689915172371	\N	0
+\.
+
+
+--
+-- Data for Name: user_group_membership; Type: TABLE DATA; Schema: public; Owner: auth
+--
+
+COPY public.user_group_membership (group_id, user_id) FROM stdin;
+23aee2a9-5290-4c30-9880-9a50e66d328c	fbbbbefb-2135-4fbd-b8d4-8a58af29322d
+b76771c2-bf4e-4d38-8ae0-ee2357b1a0ea	68b3d4fe-8b95-473b-9717-b72d62dcf9c9
+690628ed-c04f-4c3f-9d5a-476e4812c0ff	9f9eb61e-d08a-4d3e-8caa-a78a455287fb
+690628ed-c04f-4c3f-9d5a-476e4812c0ff	23a247bf-65ce-4f61-9c0b-2112a55712b4
+690628ed-c04f-4c3f-9d5a-476e4812c0ff	7e5693a0-e8ad-4d71-a93a-190e83952077
+690628ed-c04f-4c3f-9d5a-476e4812c0ff	c91068b4-3445-46c6-8694-5d72993bda87
+690628ed-c04f-4c3f-9d5a-476e4812c0ff	cbffa0e8-f26f-4898-a134-5fdbb1908478
+690628ed-c04f-4c3f-9d5a-476e4812c0ff	2946ec8b-1229-45d0-9576-21b8ccb0e5bc
+690628ed-c04f-4c3f-9d5a-476e4812c0ff	6dde0034-a558-48e3-b2e2-b82e7a5f82a5
+690628ed-c04f-4c3f-9d5a-476e4812c0ff	977e5710-5bc9-448a-acb9-42e2597f8709
+690628ed-c04f-4c3f-9d5a-476e4812c0ff	fff67005-26b9-4e07-aedb-d904f8dddc0d
+69c3be25-aee5-4849-93ce-69df5d6d91ad	3f0abba2-acfd-4654-8933-bea060fc3a84
+4f6f49e3-7dd7-4fb6-82cd-5cce73609597	3f0abba2-acfd-4654-8933-bea060fc3a84
+81513f19-b0d6-41f4-819c-2e9336ea58e9	3f0abba2-acfd-4654-8933-bea060fc3a84
+4ef07f87-5ad5-4323-891c-3538a325fc9f	e254fd04-7ea1-47ea-9807-72f3d305a8bd
+39ad0e6a-bcc3-4c3a-b69a-877699a3234b	a4c1b05a-ec81-4931-b24a-1824518ff3b5
+9fe828c1-fd86-4b86-855a-a793b4f1a7fe	a4c1b05a-ec81-4931-b24a-1824518ff3b5
+69c3be25-aee5-4849-93ce-69df5d6d91ad	a4c1b05a-ec81-4931-b24a-1824518ff3b5
+9fe828c1-fd86-4b86-855a-a793b4f1a7fe	3f0abba2-acfd-4654-8933-bea060fc3a84
+81513f19-b0d6-41f4-819c-2e9336ea58e9	a4c1b05a-ec81-4931-b24a-1824518ff3b5
+9fe828c1-fd86-4b86-855a-a793b4f1a7fe	5876117d-e688-4a5a-953b-6a6109d16480
+84ea6eee-a99b-4fd9-b3dc-05d5dc3c15ab	5876117d-e688-4a5a-953b-6a6109d16480
+69c3be25-aee5-4849-93ce-69df5d6d91ad	5876117d-e688-4a5a-953b-6a6109d16480
+cda82a5c-08cb-47bc-846e-4c6e698e8bd3	cd842471-191e-495f-b190-6b9488ef6a5c
+81513f19-b0d6-41f4-819c-2e9336ea58e9	cd842471-191e-495f-b190-6b9488ef6a5c
+128afe94-f099-4c0b-b7c5-89f54b3063c3	cd842471-191e-495f-b190-6b9488ef6a5c
+795a62e7-8744-4e6a-b7e8-f6c0f7e482cc	cd842471-191e-495f-b190-6b9488ef6a5c
+0f6475b7-8929-4ee1-a302-1c7e819ef745	cd842471-191e-495f-b190-6b9488ef6a5c
+69c3be25-aee5-4849-93ce-69df5d6d91ad	cd842471-191e-495f-b190-6b9488ef6a5c
+128afe94-f099-4c0b-b7c5-89f54b3063c3	3aa7e54f-2d24-4a30-8c63-d4be9701f8ce
+81513f19-b0d6-41f4-819c-2e9336ea58e9	3aa7e54f-2d24-4a30-8c63-d4be9701f8ce
+cda82a5c-08cb-47bc-846e-4c6e698e8bd3	3aa7e54f-2d24-4a30-8c63-d4be9701f8ce
+69c3be25-aee5-4849-93ce-69df5d6d91ad	3aa7e54f-2d24-4a30-8c63-d4be9701f8ce
+128afe94-f099-4c0b-b7c5-89f54b3063c3	25d817a5-cbb4-4c19-a1b3-7e056ab181d8
+81513f19-b0d6-41f4-819c-2e9336ea58e9	25d817a5-cbb4-4c19-a1b3-7e056ab181d8
+9fe828c1-fd86-4b86-855a-a793b4f1a7fe	25d817a5-cbb4-4c19-a1b3-7e056ab181d8
+69c3be25-aee5-4849-93ce-69df5d6d91ad	25d817a5-cbb4-4c19-a1b3-7e056ab181d8
+39ad0e6a-bcc3-4c3a-b69a-877699a3234b	daae7bbc-20d7-465e-b3fb-9ffcbd8d16c4
+9fe828c1-fd86-4b86-855a-a793b4f1a7fe	daae7bbc-20d7-465e-b3fb-9ffcbd8d16c4
+81513f19-b0d6-41f4-819c-2e9336ea58e9	daae7bbc-20d7-465e-b3fb-9ffcbd8d16c4
+69c3be25-aee5-4849-93ce-69df5d6d91ad	daae7bbc-20d7-465e-b3fb-9ffcbd8d16c4
+9fe828c1-fd86-4b86-855a-a793b4f1a7fe	69a05450-3943-4769-a076-d9549810e6ad
+cda82a5c-08cb-47bc-846e-4c6e698e8bd3	69a05450-3943-4769-a076-d9549810e6ad
+6f4b7b6d-c898-45b9-a352-de43a4514b38	69a05450-3943-4769-a076-d9549810e6ad
+69c3be25-aee5-4849-93ce-69df5d6d91ad	69a05450-3943-4769-a076-d9549810e6ad
+81513f19-b0d6-41f4-819c-2e9336ea58e9	69a05450-3943-4769-a076-d9549810e6ad
+0f6475b7-8929-4ee1-a302-1c7e819ef745	ba1c6ee5-8d41-4fd0-bdb4-3f05c472203b
+128afe94-f099-4c0b-b7c5-89f54b3063c3	ba1c6ee5-8d41-4fd0-bdb4-3f05c472203b
+81513f19-b0d6-41f4-819c-2e9336ea58e9	ba1c6ee5-8d41-4fd0-bdb4-3f05c472203b
+69c3be25-aee5-4849-93ce-69df5d6d91ad	ba1c6ee5-8d41-4fd0-bdb4-3f05c472203b
+128afe94-f099-4c0b-b7c5-89f54b3063c3	efd25043-d9e0-431f-b641-597c5e3683e8
+9fe828c1-fd86-4b86-855a-a793b4f1a7fe	efd25043-d9e0-431f-b641-597c5e3683e8
+81513f19-b0d6-41f4-819c-2e9336ea58e9	efd25043-d9e0-431f-b641-597c5e3683e8
+cda82a5c-08cb-47bc-846e-4c6e698e8bd3	efd25043-d9e0-431f-b641-597c5e3683e8
+69c3be25-aee5-4849-93ce-69df5d6d91ad	efd25043-d9e0-431f-b641-597c5e3683e8
+9fe828c1-fd86-4b86-855a-a793b4f1a7fe	d56e823f-c21c-41c7-aa87-6d28dca6f11c
+81513f19-b0d6-41f4-819c-2e9336ea58e9	d56e823f-c21c-41c7-aa87-6d28dca6f11c
+4f6f49e3-7dd7-4fb6-82cd-5cce73609597	d56e823f-c21c-41c7-aa87-6d28dca6f11c
+cda82a5c-08cb-47bc-846e-4c6e698e8bd3	d56e823f-c21c-41c7-aa87-6d28dca6f11c
+69c3be25-aee5-4849-93ce-69df5d6d91ad	d56e823f-c21c-41c7-aa87-6d28dca6f11c
+9fe828c1-fd86-4b86-855a-a793b4f1a7fe	0ce1529a-7ce3-4d5d-a1fc-5deebcfaf45c
+81513f19-b0d6-41f4-819c-2e9336ea58e9	0ce1529a-7ce3-4d5d-a1fc-5deebcfaf45c
+84ea6eee-a99b-4fd9-b3dc-05d5dc3c15ab	0ce1529a-7ce3-4d5d-a1fc-5deebcfaf45c
+69c3be25-aee5-4849-93ce-69df5d6d91ad	0ce1529a-7ce3-4d5d-a1fc-5deebcfaf45c
+4f6f49e3-7dd7-4fb6-82cd-5cce73609597	8a3505c8-f7e3-49bf-9f21-9e6a50421de6
+0f6475b7-8929-4ee1-a302-1c7e819ef745	8a3505c8-f7e3-49bf-9f21-9e6a50421de6
+81513f19-b0d6-41f4-819c-2e9336ea58e9	8a3505c8-f7e3-49bf-9f21-9e6a50421de6
+69c3be25-aee5-4849-93ce-69df5d6d91ad	8a3505c8-f7e3-49bf-9f21-9e6a50421de6
+128afe94-f099-4c0b-b7c5-89f54b3063c3	1a6aec3b-95da-4b7f-bba3-71d2ad8b154e
+9fe828c1-fd86-4b86-855a-a793b4f1a7fe	1a6aec3b-95da-4b7f-bba3-71d2ad8b154e
+81513f19-b0d6-41f4-819c-2e9336ea58e9	1a6aec3b-95da-4b7f-bba3-71d2ad8b154e
+cda82a5c-08cb-47bc-846e-4c6e698e8bd3	1a6aec3b-95da-4b7f-bba3-71d2ad8b154e
+69c3be25-aee5-4849-93ce-69df5d6d91ad	1a6aec3b-95da-4b7f-bba3-71d2ad8b154e
+81513f19-b0d6-41f4-819c-2e9336ea58e9	a897bd98-6fb7-442f-a2c7-a99cfdbd11e5
+128afe94-f099-4c0b-b7c5-89f54b3063c3	a897bd98-6fb7-442f-a2c7-a99cfdbd11e5
+9fe828c1-fd86-4b86-855a-a793b4f1a7fe	a897bd98-6fb7-442f-a2c7-a99cfdbd11e5
+cda82a5c-08cb-47bc-846e-4c6e698e8bd3	a897bd98-6fb7-442f-a2c7-a99cfdbd11e5
+69c3be25-aee5-4849-93ce-69df5d6d91ad	a897bd98-6fb7-442f-a2c7-a99cfdbd11e5
+0f6475b7-8929-4ee1-a302-1c7e819ef745	d40c0870-2174-4115-85dd-deac479af196
+84ea6eee-a99b-4fd9-b3dc-05d5dc3c15ab	d40c0870-2174-4115-85dd-deac479af196
+81513f19-b0d6-41f4-819c-2e9336ea58e9	d40c0870-2174-4115-85dd-deac479af196
+69c3be25-aee5-4849-93ce-69df5d6d91ad	d40c0870-2174-4115-85dd-deac479af196
+bf3c1edd-2673-4c97-b3da-6ae0be6ae08a	fff67005-26b9-4e07-aedb-d904f8dddc0d
+bf3c1edd-2673-4c97-b3da-6ae0be6ae08a	7e5693a0-e8ad-4d71-a93a-190e83952077
+69c3be25-aee5-4849-93ce-69df5d6d91ad	9f9eb61e-d08a-4d3e-8caa-a78a455287fb
+9fe828c1-fd86-4b86-855a-a793b4f1a7fe	9f9eb61e-d08a-4d3e-8caa-a78a455287fb
+81513f19-b0d6-41f4-819c-2e9336ea58e9	9f9eb61e-d08a-4d3e-8caa-a78a455287fb
+4f6f49e3-7dd7-4fb6-82cd-5cce73609597	9f9eb61e-d08a-4d3e-8caa-a78a455287fb
+cda82a5c-08cb-47bc-846e-4c6e698e8bd3	9f9eb61e-d08a-4d3e-8caa-a78a455287fb
+0f6475b7-8929-4ee1-a302-1c7e819ef745	9f9eb61e-d08a-4d3e-8caa-a78a455287fb
+bf3c1edd-2673-4c97-b3da-6ae0be6ae08a	9f9eb61e-d08a-4d3e-8caa-a78a455287fb
+a4c6146e-5be6-48c3-8cc3-8971e88083e3	2f118e26-475c-4e20-8bc1-8d5dbf6dd782
+0f6475b7-8929-4ee1-a302-1c7e819ef745	2f118e26-475c-4e20-8bc1-8d5dbf6dd782
+84ea6eee-a99b-4fd9-b3dc-05d5dc3c15ab	2f118e26-475c-4e20-8bc1-8d5dbf6dd782
+81513f19-b0d6-41f4-819c-2e9336ea58e9	2f118e26-475c-4e20-8bc1-8d5dbf6dd782
+69c3be25-aee5-4849-93ce-69df5d6d91ad	2f118e26-475c-4e20-8bc1-8d5dbf6dd782
+bf3c1edd-2673-4c97-b3da-6ae0be6ae08a	484ecf52-e2da-4353-8b18-a525d85c5c29
+9fe828c1-fd86-4b86-855a-a793b4f1a7fe	3d976ce8-0ea7-46b0-8c18-95e13aec2a33
+81513f19-b0d6-41f4-819c-2e9336ea58e9	3d976ce8-0ea7-46b0-8c18-95e13aec2a33
+c022abec-0315-4e77-88e2-ce7f61647e10	3d976ce8-0ea7-46b0-8c18-95e13aec2a33
+69c3be25-aee5-4849-93ce-69df5d6d91ad	3d976ce8-0ea7-46b0-8c18-95e13aec2a33
+cda82a5c-08cb-47bc-846e-4c6e698e8bd3	3d976ce8-0ea7-46b0-8c18-95e13aec2a33
+bf3c1edd-2673-4c97-b3da-6ae0be6ae08a	23a247bf-65ce-4f61-9c0b-2112a55712b4
+bf3c1edd-2673-4c97-b3da-6ae0be6ae08a	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+9fe828c1-fd86-4b86-855a-a793b4f1a7fe	621b8419-f988-462e-a8b4-90f501e93f25
+81513f19-b0d6-41f4-819c-2e9336ea58e9	621b8419-f988-462e-a8b4-90f501e93f25
+009092d7-1f3a-4694-84ae-938425f38d0f	621b8419-f988-462e-a8b4-90f501e93f25
+143587ec-e03b-4091-a0f0-44177d691236	621b8419-f988-462e-a8b4-90f501e93f25
+81513f19-b0d6-41f4-819c-2e9336ea58e9	ac40c164-9bb5-4ad8-bb95-7ef869f928af
+39ad0e6a-bcc3-4c3a-b69a-877699a3234b	ac40c164-9bb5-4ad8-bb95-7ef869f928af
+9fe828c1-fd86-4b86-855a-a793b4f1a7fe	ac40c164-9bb5-4ad8-bb95-7ef869f928af
+69c3be25-aee5-4849-93ce-69df5d6d91ad	ac40c164-9bb5-4ad8-bb95-7ef869f928af
+15e38991-aa66-443c-acab-182d99b093a6	2f118e26-475c-4e20-8bc1-8d5dbf6dd782
+81513f19-b0d6-41f4-819c-2e9336ea58e9	0bdce5da-f54b-4a99-9a55-9136f0500c63
+39ad0e6a-bcc3-4c3a-b69a-877699a3234b	0bdce5da-f54b-4a99-9a55-9136f0500c63
+0f6475b7-8929-4ee1-a302-1c7e819ef745	0bdce5da-f54b-4a99-9a55-9136f0500c63
+69c3be25-aee5-4849-93ce-69df5d6d91ad	0bdce5da-f54b-4a99-9a55-9136f0500c63
+81513f19-b0d6-41f4-819c-2e9336ea58e9	51cc7862-dfbc-452d-bf6a-d530d361eae0
+2804324a-78c4-421a-8c9d-09a6e4cbd1f2	51cc7862-dfbc-452d-bf6a-d530d361eae0
+b3687b04-82bd-4b0e-9796-660bf1e718d2	51cc7862-dfbc-452d-bf6a-d530d361eae0
+9fe828c1-fd86-4b86-855a-a793b4f1a7fe	51cc7862-dfbc-452d-bf6a-d530d361eae0
+81513f19-b0d6-41f4-819c-2e9336ea58e9	c3f4151a-dde6-462a-9cc6-cdc67e74f327
+39ad0e6a-bcc3-4c3a-b69a-877699a3234b	c3f4151a-dde6-462a-9cc6-cdc67e74f327
+0f6475b7-8929-4ee1-a302-1c7e819ef745	c3f4151a-dde6-462a-9cc6-cdc67e74f327
+69c3be25-aee5-4849-93ce-69df5d6d91ad	c3f4151a-dde6-462a-9cc6-cdc67e74f327
+4ef07f87-5ad5-4323-891c-3538a325fc9f	c3f4151a-dde6-462a-9cc6-cdc67e74f327
+bf3c1edd-2673-4c97-b3da-6ae0be6ae08a	c3f4151a-dde6-462a-9cc6-cdc67e74f327
+39ad0e6a-bcc3-4c3a-b69a-877699a3234b	23a247bf-65ce-4f61-9c0b-2112a55712b4
+0f6475b7-8929-4ee1-a302-1c7e819ef745	23a247bf-65ce-4f61-9c0b-2112a55712b4
+81513f19-b0d6-41f4-819c-2e9336ea58e9	23a247bf-65ce-4f61-9c0b-2112a55712b4
+69c3be25-aee5-4849-93ce-69df5d6d91ad	23a247bf-65ce-4f61-9c0b-2112a55712b4
+15e38991-aa66-443c-acab-182d99b093a6	c3f4151a-dde6-462a-9cc6-cdc67e74f327
+15e38991-aa66-443c-acab-182d99b093a6	23a247bf-65ce-4f61-9c0b-2112a55712b4
+4f748002-bd3f-4f8b-9a3e-e41f5980e35b	8a3505c8-f7e3-49bf-9f21-9e6a50421de6
+cb943460-0a81-4ae1-8f1a-edeaf0309a95	484ecf52-e2da-4353-8b18-a525d85c5c29
+\.
+
+
+--
+-- Data for Name: user_role_mapping; Type: TABLE DATA; Schema: public; Owner: auth
+--
+
+COPY public.user_role_mapping (role_id, user_id) FROM stdin;
+0d4c4e95-1e3d-4130-8c93-cec60271b80c	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+5872b18e-7091-4de2-8300-e118fc4bddf4	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+b9154949-2130-4b9c-b336-f9a0db46d7fd	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+43a1af38-a73c-4750-b12c-86ca036282fc	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+19c473ae-68be-4120-ac4e-d2b0b4803f92	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+307f16d5-33eb-482e-b034-76bc3b3f4d4e	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+2c454eb4-9add-498c-b098-b6cfc3210a90	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+861d336d-48b9-4771-9951-1368eeb34278	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+ffda544f-faa7-4d63-bc9d-03bd42e6c611	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+f6fb31ad-3fbd-4c79-b98c-54df88b256b0	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+2b5f8bac-7741-41c4-9acd-b912a65f9835	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+9aca0983-43aa-45f4-9722-f1e127b8f77b	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+a8d4e236-6460-442c-852b-f2d604ff18fe	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+930433a6-5dab-4b9e-b246-c9d6f6c33ae8	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+88f173d0-ddd7-42d8-96a3-2fb4b5517c06	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+efcaab26-de26-4767-8722-95d3ec47fdcf	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+76e0a7a4-6f76-46e7-bc91-b89366149025	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+04d8edd6-2a0a-46d3-8cf6-95555690744f	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+0a0ff703-cfe1-44fa-88ab-f73cd2b4338c	d89bdf99-9ef6-43e8-aa55-a231a61b0400
+c4be5656-df07-4c28-ab13-f81415a8449a	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+4496a450-70ec-4f5c-956f-f426634c1ef0	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+c4be5656-df07-4c28-ab13-f81415a8449a	5e30d3ad-15b0-48e5-83df-523d59fe2684
+6857b3a1-ee15-4a31-aab2-5004ac814e12	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+cf7b14b7-be6e-49ec-8948-61d1cfbc2878	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+ddbc422f-e4b6-4ac3-9e08-caf76993b67b	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+f10a20f2-5d55-4f49-a3e0-fc8f3afcc260	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+02f707ed-f593-4419-b8de-5cce2060226c	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+a7d67ced-cf92-49ea-951e-f9b8b0762400	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+9fb0b4fd-0cf1-4196-9a0b-bb421c1745c9	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+38701745-8805-4533-be40-a4cfe59cd9ab	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+6d4e5e98-4932-4f87-9160-cca42879bf4b	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+d2dbd7b7-5947-480f-91a9-4d2de6bcf37b	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+f835e677-57ac-4bcd-8056-ddec73d80e2a	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+1bd10172-a479-4fd8-af28-c4c837463957	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+4945191a-b432-4fd7-8640-576f8a3698fc	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+c76eeeed-16ed-43f4-97b4-9cbc12293e67	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+ff1d5559-942e-4023-97b2-0095932a4ea9	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+59c58d1d-a640-4ff1-bc0c-f449389350f1	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+850cccdf-b1b6-4dd5-9464-af2248a0fb21	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+64d99f98-be30-40f3-8cdd-8ba07d3493bb	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+2b2e0c60-78dd-404f-b10d-cba538d8e1a3	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+5926f14c-081e-4e16-bf59-6a722b5c4d73	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+ecbfc54f-1a23-4e26-9336-50498989bdd2	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+c4be5656-df07-4c28-ab13-f81415a8449a	fbbbbefb-2135-4fbd-b8d4-8a58af29322d
+c4be5656-df07-4c28-ab13-f81415a8449a	68b3d4fe-8b95-473b-9717-b72d62dcf9c9
+c4be5656-df07-4c28-ab13-f81415a8449a	23a247bf-65ce-4f61-9c0b-2112a55712b4
+c4be5656-df07-4c28-ab13-f81415a8449a	7e5693a0-e8ad-4d71-a93a-190e83952077
+c4be5656-df07-4c28-ab13-f81415a8449a	c91068b4-3445-46c6-8694-5d72993bda87
+c4be5656-df07-4c28-ab13-f81415a8449a	2f118e26-475c-4e20-8bc1-8d5dbf6dd782
+c4be5656-df07-4c28-ab13-f81415a8449a	cbffa0e8-f26f-4898-a134-5fdbb1908478
+c4be5656-df07-4c28-ab13-f81415a8449a	2946ec8b-1229-45d0-9576-21b8ccb0e5bc
+c4be5656-df07-4c28-ab13-f81415a8449a	9f9eb61e-d08a-4d3e-8caa-a78a455287fb
+c4be5656-df07-4c28-ab13-f81415a8449a	6dde0034-a558-48e3-b2e2-b82e7a5f82a5
+c4be5656-df07-4c28-ab13-f81415a8449a	977e5710-5bc9-448a-acb9-42e2597f8709
+c4be5656-df07-4c28-ab13-f81415a8449a	c3f4151a-dde6-462a-9cc6-cdc67e74f327
+ab5edf27-2dab-44f8-ae4b-4dd4b7ab32b6	fbbbbefb-2135-4fbd-b8d4-8a58af29322d
+ab5edf27-2dab-44f8-ae4b-4dd4b7ab32b6	68b3d4fe-8b95-473b-9717-b72d62dcf9c9
+ab5edf27-2dab-44f8-ae4b-4dd4b7ab32b6	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+9fb0b4fd-0cf1-4196-9a0b-bb421c1745c9	9f9eb61e-d08a-4d3e-8caa-a78a455287fb
+02f707ed-f593-4419-b8de-5cce2060226c	9f9eb61e-d08a-4d3e-8caa-a78a455287fb
+c4be5656-df07-4c28-ab13-f81415a8449a	fff67005-26b9-4e07-aedb-d904f8dddc0d
+c4be5656-df07-4c28-ab13-f81415a8449a	484ecf52-e2da-4353-8b18-a525d85c5c29
+ab5edf27-2dab-44f8-ae4b-4dd4b7ab32b6	9f9eb61e-d08a-4d3e-8caa-a78a455287fb
+ab5edf27-2dab-44f8-ae4b-4dd4b7ab32b6	fff67005-26b9-4e07-aedb-d904f8dddc0d
+04435b81-4304-4288-b008-e21b76532d10	fff67005-26b9-4e07-aedb-d904f8dddc0d
+04435b81-4304-4288-b008-e21b76532d10	c3f4151a-dde6-462a-9cc6-cdc67e74f327
+ab5edf27-2dab-44f8-ae4b-4dd4b7ab32b6	c3f4151a-dde6-462a-9cc6-cdc67e74f327
+ecbfc54f-1a23-4e26-9336-50498989bdd2	c3f4151a-dde6-462a-9cc6-cdc67e74f327
+5926f14c-081e-4e16-bf59-6a722b5c4d73	c3f4151a-dde6-462a-9cc6-cdc67e74f327
+04435b81-4304-4288-b008-e21b76532d10	23a247bf-65ce-4f61-9c0b-2112a55712b4
+ecbfc54f-1a23-4e26-9336-50498989bdd2	23a247bf-65ce-4f61-9c0b-2112a55712b4
+5926f14c-081e-4e16-bf59-6a722b5c4d73	23a247bf-65ce-4f61-9c0b-2112a55712b4
+c4be5656-df07-4c28-ab13-f81415a8449a	eb349091-7365-4f46-914f-eaab06d9bfaa
+f7ba8b18-4e67-466a-b8e5-9ee9ce384333	eb349091-7365-4f46-914f-eaab06d9bfaa
+c4be5656-df07-4c28-ab13-f81415a8449a	466b87d0-43f9-4cc6-9d39-3f054589451b
+f7ba8b18-4e67-466a-b8e5-9ee9ce384333	466b87d0-43f9-4cc6-9d39-3f054589451b
+c4be5656-df07-4c28-ab13-f81415a8449a	79e4b95f-3b02-470e-be7f-1a0857c97b68
+f7ba8b18-4e67-466a-b8e5-9ee9ce384333	79e4b95f-3b02-470e-be7f-1a0857c97b68
+f7ba8b18-4e67-466a-b8e5-9ee9ce384333	9f9eb61e-d08a-4d3e-8caa-a78a455287fb
+f7ba8b18-4e67-466a-b8e5-9ee9ce384333	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+f7ba8b18-4e67-466a-b8e5-9ee9ce384333	977e5710-5bc9-448a-acb9-42e2597f8709
+9fb0b4fd-0cf1-4196-9a0b-bb421c1745c9	977e5710-5bc9-448a-acb9-42e2597f8709
+f7ba8b18-4e67-466a-b8e5-9ee9ce384333	2f118e26-475c-4e20-8bc1-8d5dbf6dd782
+04435b81-4304-4288-b008-e21b76532d10	484ecf52-e2da-4353-8b18-a525d85c5c29
+c4be5656-df07-4c28-ab13-f81415a8449a	3f0abba2-acfd-4654-8933-bea060fc3a84
+f7ba8b18-4e67-466a-b8e5-9ee9ce384333	c3f4151a-dde6-462a-9cc6-cdc67e74f327
+04435b81-4304-4288-b008-e21b76532d10	3f0abba2-acfd-4654-8933-bea060fc3a84
+04435b81-4304-4288-b008-e21b76532d10	5e30d3ad-15b0-48e5-83df-523d59fe2684
+c4be5656-df07-4c28-ab13-f81415a8449a	e254fd04-7ea1-47ea-9807-72f3d305a8bd
+1ba7845e-2a60-4c94-a0e2-1e9697c1c88e	7e5693a0-e8ad-4d71-a93a-190e83952077
+71eee4f1-bdd7-4547-9913-fc951ffe8ba4	7e5693a0-e8ad-4d71-a93a-190e83952077
+c4be5656-df07-4c28-ab13-f81415a8449a	a4c1b05a-ec81-4931-b24a-1824518ff3b5
+c4be5656-df07-4c28-ab13-f81415a8449a	3d976ce8-0ea7-46b0-8c18-95e13aec2a33
+71eee4f1-bdd7-4547-9913-fc951ffe8ba4	9f9eb61e-d08a-4d3e-8caa-a78a455287fb
+71eee4f1-bdd7-4547-9913-fc951ffe8ba4	2f118e26-475c-4e20-8bc1-8d5dbf6dd782
+c4be5656-df07-4c28-ab13-f81415a8449a	5876117d-e688-4a5a-953b-6a6109d16480
+c4be5656-df07-4c28-ab13-f81415a8449a	cd842471-191e-495f-b190-6b9488ef6a5c
+c4be5656-df07-4c28-ab13-f81415a8449a	3aa7e54f-2d24-4a30-8c63-d4be9701f8ce
+c4be5656-df07-4c28-ab13-f81415a8449a	25d817a5-cbb4-4c19-a1b3-7e056ab181d8
+c4be5656-df07-4c28-ab13-f81415a8449a	daae7bbc-20d7-465e-b3fb-9ffcbd8d16c4
+c4be5656-df07-4c28-ab13-f81415a8449a	69a05450-3943-4769-a076-d9549810e6ad
+c4be5656-df07-4c28-ab13-f81415a8449a	ba1c6ee5-8d41-4fd0-bdb4-3f05c472203b
+c4be5656-df07-4c28-ab13-f81415a8449a	efd25043-d9e0-431f-b641-597c5e3683e8
+c4be5656-df07-4c28-ab13-f81415a8449a	d56e823f-c21c-41c7-aa87-6d28dca6f11c
+c4be5656-df07-4c28-ab13-f81415a8449a	0ce1529a-7ce3-4d5d-a1fc-5deebcfaf45c
+c4be5656-df07-4c28-ab13-f81415a8449a	8a3505c8-f7e3-49bf-9f21-9e6a50421de6
+c4be5656-df07-4c28-ab13-f81415a8449a	1a6aec3b-95da-4b7f-bba3-71d2ad8b154e
+c4be5656-df07-4c28-ab13-f81415a8449a	a897bd98-6fb7-442f-a2c7-a99cfdbd11e5
+c4be5656-df07-4c28-ab13-f81415a8449a	d40c0870-2174-4115-85dd-deac479af196
+9fb0b4fd-0cf1-4196-9a0b-bb421c1745c9	3d976ce8-0ea7-46b0-8c18-95e13aec2a33
+02f707ed-f593-4419-b8de-5cce2060226c	3d976ce8-0ea7-46b0-8c18-95e13aec2a33
+71eee4f1-bdd7-4547-9913-fc951ffe8ba4	2bd34e3e-23da-4392-9dd1-f3c3ee32d9c6
+f7ba8b18-4e67-466a-b8e5-9ee9ce384333	484ecf52-e2da-4353-8b18-a525d85c5c29
+71eee4f1-bdd7-4547-9913-fc951ffe8ba4	23a247bf-65ce-4f61-9c0b-2112a55712b4
+71eee4f1-bdd7-4547-9913-fc951ffe8ba4	c3f4151a-dde6-462a-9cc6-cdc67e74f327
+71eee4f1-bdd7-4547-9913-fc951ffe8ba4	3d976ce8-0ea7-46b0-8c18-95e13aec2a33
+c4be5656-df07-4c28-ab13-f81415a8449a	d9523b97-47e8-4c10-af77-8aeed51ab7bb
+c4be5656-df07-4c28-ab13-f81415a8449a	621b8419-f988-462e-a8b4-90f501e93f25
+c4be5656-df07-4c28-ab13-f81415a8449a	ac40c164-9bb5-4ad8-bb95-7ef869f928af
+c4be5656-df07-4c28-ab13-f81415a8449a	0bdce5da-f54b-4a99-9a55-9136f0500c63
+c4be5656-df07-4c28-ab13-f81415a8449a	51cc7862-dfbc-452d-bf6a-d530d361eae0
+9fb0b4fd-0cf1-4196-9a0b-bb421c1745c9	51cc7862-dfbc-452d-bf6a-d530d361eae0
+02f707ed-f593-4419-b8de-5cce2060226c	51cc7862-dfbc-452d-bf6a-d530d361eae0
+c4be5656-df07-4c28-ab13-f81415a8449a	e8b8af8c-57a8-41af-8670-d60c837441af
+c4be5656-df07-4c28-ab13-f81415a8449a	1fd699e8-1502-4edb-9f0e-89172308b807
+f7ba8b18-4e67-466a-b8e5-9ee9ce384333	23a247bf-65ce-4f61-9c0b-2112a55712b4
+ab5edf27-2dab-44f8-ae4b-4dd4b7ab32b6	23a247bf-65ce-4f61-9c0b-2112a55712b4
+f7ba8b18-4e67-466a-b8e5-9ee9ce384333	7e5693a0-e8ad-4d71-a93a-190e83952077
+02f707ed-f593-4419-b8de-5cce2060226c	79e4b95f-3b02-470e-be7f-1a0857c97b68
+02f707ed-f593-4419-b8de-5cce2060226c	c3f4151a-dde6-462a-9cc6-cdc67e74f327
+\.
+
+
+--
+-- Data for Name: user_rule; Type: TABLE DATA; Schema: public; Owner: auth
+--
+
+COPY public.user_rule (uid, rule_id, attribute, operator, value) FROM stdin;
+f5d6372c-0a4e-42a6-904a-23fbf93bb9e9	a6f6124b-1e48-4d3c-9dc8-d7711c85884f			
+183594eb-4bbe-487c-83b2-28c11ebc7a86	37b53584-f17d-4387-80f6-2131503bfb04			
+83c30e66-b666-4a02-9925-2f44f4c5f963	c462622f-b21e-4992-818d-a04f3ca2b4ba			
+1d53b975-c470-4a91-bfae-173ce1dfb9ce	e76a672a-fd4d-409b-8898-f224d098e8f3			
+d6b62f16-0b34-49f2-bd1d-8c353f3a493f	21e5869f-a0bc-453e-a2a7-f10c6e4cd652			
+f9818152-36ad-4deb-bb1e-f467fb7b95df	53be35d8-0b86-43d7-a2ac-3c381f9fa12f			
+a57e8b14-5e53-49c2-a710-c5e24651755b	e9785bb4-2b46-4ac1-bf85-309a838f5052			
+d6b5ef56-57c2-470a-9205-bc79f1169672	a942f20a-baa9-431b-b2de-1c21db0a8cb3			
+881f3817-3378-410e-bdf4-8a90d18e1a55	ee510573-1acf-4b26-83ed-dfaddec522d3			
+243fb75a-8fff-4283-94be-a0f6bd2165f4	0b6482ae-ecee-4cc3-8d59-4eb012ac7ac9			
+a7996116-15b7-4766-97af-b0a29700a5e2	3181e059-2b7c-49e8-9d4c-9344525ef773	должность	Равно	решала
+ba2d081e-ddcd-4f5e-bcda-05f309949cb7	a0e42ffe-319c-4f17-86c6-2eaee0406c71	должность	Равно	роза
+e85bd498-e706-44e8-b294-966ed53eb926	9dcf63af-4d80-40c9-9fe9-a229f91e863a	должность	Начинается с	null
+c7900e40-773e-4211-aca2-8a0f42583d72	9dcf63af-4d80-40c9-9fe9-a229f91e863a			
+e93e50ab-e50f-4afc-961b-d42b8e787427	24aa8248-d1ea-4edb-8c17-325c23f8fe2f			
+44073d36-170b-4061-ac0a-7276ada45d39	42a8fb9f-b945-4df9-bce9-462f27e352f2			
+8d68da9d-4cbd-4c17-a52a-883419654077	cda6f285-f285-4f19-abb7-b31464392c70	должность	Равно	роза
+1d8c1bef-2661-47cc-859b-4cb097720f1a	4b2c9fe5-7cfa-42ee-8df1-d365e72cca43			
+0c872b25-24c3-4c02-8902-77d3c8487fd2	9b542dc0-59cd-4f19-83b3-c7194e86423c	должность	Равно	программист
+1c629cff-f7e1-46a4-a74e-905f26cf4a09	09b928ef-0daa-45d1-a8e9-240c457aab52	null	null	null
+dfed74ab-bebe-424e-bd5a-58b29d95a049	09b928ef-0daa-45d1-a8e9-240c457aab52			
+fa00a50d-a9ea-49e0-890b-cb6d8fc7ba9d	357a403a-45a2-4e82-83dc-b5af31bb791f			
+fbfb35ec-1c1b-484a-a2b5-100bbe13688a	878364a1-3491-434f-99b2-d04925382a5e	должность	Равно	роза
+c730db58-ef3b-43d6-bdb7-6fef465b427f	ef36d892-ba15-4456-9c36-5c0f570e1e09	должность	Равно	решала
+64e61f1c-ab79-4bfa-91f6-6d987ad0ac72	4d9b5f4d-e4b0-49bf-a1b3-51d89c47dd8c	должность	Равно	решала
+7c14c64e-f3cb-497e-b20d-b56123428ca3	a0abd590-2a6d-49d0-954b-fc3a270af831			
+5b705974-170b-47be-9fef-bed50ae8fd74	f25243d3-4697-4080-a6dc-0c0f4c379136	должность	Равно	решала
+e8fec85a-6f04-4aac-a4fe-f634abea9b55	21552d04-fc01-46f8-aae7-b17000309747	должность	Равно	решала
+9de8d496-30e0-4aa5-8e98-2b525b4a4279	94cd812c-0ef6-4c43-a650-a8a59a4e61cd	должность	Равно	роза
+e230b373-830c-432c-b6b3-a3890d77d348	e65d67dd-44e3-4fe7-bb99-efeee9b3f24c	должность	Равно	роза
+cb941149-43cb-4498-bbfa-57ebc1e9f0ad	c015d5ec-e590-4320-b491-418bf6de2a7e	должность	Равно	решала
+074d6e88-6c28-4b45-9469-2fa68753230e	e475b196-4cbb-48d1-9ce6-43e9d3f388f2	должность	Равно	решала
+230e15d8-8fa0-4472-a887-bdc87dc0de9d	20523004-99eb-4c21-94f6-c5abdf4cc18b	должность	Равно	решала
+fce00d6e-86df-491e-b5db-0465692c5011	e2e17e37-990f-499c-87f8-a2dc724dd6d2			
+add81735-cebd-473b-a6b5-6f20d1b30c18	42be4658-a04e-4440-927a-c6749f26c0cf			
+a184a8a3-4261-4564-bb33-bf7b771b0545	cf77d2df-c5d6-4eef-b2d1-d905bf1a935f			
+70ca692b-22ae-4903-83ed-d5d930d2b7a4	e8dc5f64-ac7d-4575-a638-932ac992d688	должность	Равно	решала
+c626c588-67c5-41ad-9587-fac42640a73c	4b3c2eb1-77c9-460e-95d8-72503b923a09			
+c5176f39-ceb0-4057-a59d-07905802076f	fec7f49d-76f1-4422-9068-59357265f9de			
+d36a404a-852b-46ad-aaa5-2032e57e4000	6d84f9a6-e580-4529-b7e9-bd6389d5e670	служба	null	null
+93475300-0585-4fd8-aaa9-08340e79b2f2	6d84f9a6-e580-4529-b7e9-bd6389d5e670			
+7aaf3ffc-05ca-4da7-903e-995014464ba0	a2df2f59-a820-43aa-934f-50fff4075342			
+598758ef-147c-4fa9-aa3e-35f2ba9f0f01	775a117d-4858-42c3-92e9-74f315152349			
+bd12740f-7f2a-4d80-94d3-10fe0e2e9ee1	9c1c739b-c754-457f-8141-a4b97d7e74d2	должность	null	null
+5aa361a9-c88c-43bf-a753-af5bb6f7f0db	9c1c739b-c754-457f-8141-a4b97d7e74d2			
+0d2cf700-b251-40c2-af18-fc043e13e7ec	564a55aa-7852-48a3-bcd1-f7e9b8aed3ad			
+d21aa5a2-5761-4039-a892-89c49ef7b676	86e48f9e-7906-44a2-9079-345a9bbbc469	Должность	Равно	Отвественный
+98fc44ac-cd2e-465b-8602-d414ca028c16	8f435b9f-a721-487f-97fe-1dc6d4bb8a84	Должность	Равно	Заказчик
+163c4a9c-9534-4182-a465-9c65da6fd7e9	bbfb6b2d-042f-4c51-b960-2263f9724577	Должность	Равно	Бог
+f2443f7f-1f30-4652-b1ab-628e01c98875	d5611ae3-7610-4143-8588-5c739bafaec9	Должность	Равно	Бог
+065fc77c-62a2-44f7-8a4c-80974d8c05b0	21c909e8-5745-43dc-bd46-fca06975cf82	null	null	null
+f902c1ff-b9c3-4337-be1f-d47a989e820f	f21cb41c-e32a-4c0e-b348-2284bf2e5b85			
+e445268a-7485-4f13-85f6-7b18486cc9fa	57eeb7f3-e7c1-4cd9-80ce-096e31b80066			
+9e1e27e8-c931-48f4-a3a1-646980270056	962796c7-18b7-404c-b8ed-60b9b0506580			
+6d4f7f34-10c4-4270-a4b0-2f219974e760	01a4dc79-70e4-4d45-8826-10bbc9acfe38			
+562f6af5-2237-4e4d-8432-fca096252a19	d118edc1-f9c7-4559-ae1a-6430e6fece1d			
+39ec7f47-d381-43b9-a27a-0afc25325838	30ab201e-f454-4b25-b2ca-09f69d474b16			
+19f82663-964d-4231-b44d-0372f31b4701	7866ed68-4427-414b-ae84-4a962cda536b	null	null	null
+0fbbfa29-3509-4c6c-8d27-8d7be7a6b5c1	7866ed68-4427-414b-ae84-4a962cda536b			
+76980bf3-4698-4032-8525-9d1f0a6a9c96	20e8967e-eced-4f12-98ad-8545927d5aef	zxczzc	null	null
+413e01b3-f3b0-4006-a358-4b98ce488078	20e8967e-eced-4f12-98ad-8545927d5aef	null	null	null
+a68a7e9b-c08a-4a29-b17f-24afa9141d4b	20e8967e-eced-4f12-98ad-8545927d5aef			
+916fbccd-439e-4a9f-a111-09b20b9ed75e	a6967a72-8052-4aaa-84f9-a1ab1e2e7c67	ffsdsdf	null	null
+4492893f-b2fc-41e0-abf2-445230357a66	a6967a72-8052-4aaa-84f9-a1ab1e2e7c67	dsfsdf	null	null
+ceb0e0a8-e4ea-42b3-86cb-1f4979a94d08	a6967a72-8052-4aaa-84f9-a1ab1e2e7c67			
+361ed872-8f87-49ce-8e72-49a150cbb834	c048151c-d3fa-4876-a3c4-39c1fc33c2a4	Должность	Равно	Руководитель отдела ПО
+35dbf6b5-ef1e-4972-8c64-898deb4cfc66	acb9b623-eb85-4c41-9f50-c3016176950d			
+4833269a-6fd4-4f05-bc20-c93ae3c9d46a	3a9fcb92-f97c-4dd7-9913-edef983fe092	null	null	null
+2cf80030-5c74-4472-8e0f-bda82ebf6f4a	3a9fcb92-f97c-4dd7-9913-edef983fe092			
+be4f4d72-c0cd-42a8-8f11-47152c13cd70	9ccb212a-e48b-4f92-8063-a9c69ee2fb54			
+3595e4fe-c21a-4b94-9ce1-631c4d4faa9c	92606a28-c411-46e2-8874-ec36e6e4be79	null	null	null
+6d0cf305-bd39-4efd-bc72-ddcae0f8fddc	92606a28-c411-46e2-8874-ec36e6e4be79			
+4db74bea-5e60-46fa-be62-dbe7d9435acf	7ba3190d-d85f-43f4-8f53-11821c36eea7	null	null	null
+347f6a17-6467-4a9e-a690-35f1e9f6e227	7ba3190d-d85f-43f4-8f53-11821c36eea7	null	null	null
+89189040-db5d-4548-a7c1-6dd24b74b3fb	7ba3190d-d85f-43f4-8f53-11821c36eea7			
+d629842d-2add-4964-a265-6ce5728e9a19	109b2d0d-9ccc-44e9-a3a7-c2a6cb4aef18			
+f4173aee-0a1d-4e04-98b4-f1e9213634b3	de447cb7-280b-4d4a-b605-ed00d20683e3	Должность	Равно	Бизнес аналитик
+8ae00cdc-a241-4cf4-afa8-d726d64ed5d5	a55d1099-7824-49d5-9a1a-e1fd6f61c1e5			
+7d6f34d8-ae40-41aa-a45e-bc8a45049ec7	30ee9a4e-4b6d-4d9a-b603-d70a58158fe6			
+985dd34a-fc25-4755-956f-ad9452a44878	3b918774-fe83-457a-a174-e1293e8d4b3a			
+ef0ce958-34d6-4be3-acca-3419f8443f39	5030e2ab-1dc9-471a-b61a-8a9765262fdc	должность	Равно	программист
+37aa6622-776d-4980-870b-4c4829a86cbc	6bdb0ed3-0147-49bf-92c3-733a139341f9			
+b9f91d0e-d2ef-4170-8831-827acb52b896	412f8392-2e66-4e48-a7d8-5f001cd58e50			
+dc847b2e-053d-4362-93a3-d3a52bd94aa6	04f20757-2794-411f-a166-cc874629de46			
+fba9b8ca-c59c-4eea-a47f-d0dece6efe1d	9b8324af-7eea-413e-b065-284118d6c42e			
+485c36ea-73a2-4078-8e7c-4674719ce94a	ab8f511c-b450-47b9-846f-d0dcdb97ef7b			
+abc93bff-e037-4e43-815b-6831c318045b	1a4ab559-10d6-4f4a-b64c-438b675f2fae			
+acf594eb-8032-4de9-a1fe-95bfea2add5d	159d1ea0-f2e1-44f1-a9c2-d29c33573a3a			
+e02bc9fc-ebeb-48a9-825f-138735159cd5	de45f641-68dc-4f6c-9cd7-0ebae7cca8dd	должность	Равно	инженер-программист первой категории
+9de24850-cbc2-4e71-ad05-5a930b4171f8	de45f641-68dc-4f6c-9cd7-0ebae7cca8dd	служба	Равно	служба программного обеспечения
+3b9f1e2a-7f54-43d1-9eb6-edfa6e899a3f	a73abaeb-9d9d-41b0-9159-f6ec7e03479c	служба	Равно	служба программного обеспечения
+425bb65a-461d-4e8a-aa5f-a47fe9bd553e	a73abaeb-9d9d-41b0-9159-f6ec7e03479c	должность	Равно	инженер-программист первой категории
+6102c98a-0d7a-4b29-a67b-dcb717addcbb	0f9c4a72-091c-4e30-9152-4fd71cb8467d	должность	Равно	инженер-программист первой категории
+aa078af2-ee4c-4dea-88c0-c92926c4f07f	0f9c4a72-091c-4e30-9152-4fd71cb8467d	служба	Равно	служба программного обеспечения
+c812e473-f949-4148-8891-da5f1e5f6596	a732bd4c-c7e7-4abc-8527-9a5eddaa81b6	должность	Равно	инженер-программист первой категории
+de7f7728-8263-42c7-836d-a71b1ecf366c	a732bd4c-c7e7-4abc-8527-9a5eddaa81b6	служба	Равно	служба программного обеспечения
+dc9e27fa-5e0c-4008-b10c-5585d81a8857	fb45e925-2409-46a5-a190-2ab2a5ccf215	служба	Равно	служба программного обеспечения
+4337ed9d-e97c-4505-bc3c-007a1c6daa20	fb45e925-2409-46a5-a190-2ab2a5ccf215	должность	Равно	инженер-программист первой категории
+dc5346c2-39d0-477e-bc66-2e16df16e890	bb000f51-ce75-4afa-8a50-8b60d9246560	должность	Равно	инженер-программист первой категории
+ef77c07b-2b04-485b-9976-1b43d3cdc0bb	bb000f51-ce75-4afa-8a50-8b60d9246560	служба	Равно	служба программного обеспечения
+41c1357e-3c52-49fb-bbb8-3915c974b6fa	7f6d2e09-0afd-4fbe-ac56-9311a82b91c4	должность	Равно	инженер-программист первой категории
+4d85b756-3ea4-46fd-a4d9-91fe1d702ef1	7f6d2e09-0afd-4fbe-ac56-9311a82b91c4	служба	Равно	служба программного обеспечения
+95ce8f41-72a4-44b0-ac1b-1c06395ddcf8	f333ba3f-62b8-46fd-8f16-3f313a6affbe	служба	Равно	служба программного обеспечения
+19aac701-60f9-4b6d-a895-008e260dde87	f333ba3f-62b8-46fd-8f16-3f313a6affbe	должность	Равно	инженер-программист первой категории
+c6a9dc00-5f98-4ca9-8190-d2b3aad797a3	6487c3a1-789d-47c8-8e93-4ee5bbfe90c2	должность	Равно	руководитель отдела персонала
+b24f45fc-1d1e-4942-b57e-4758ac967107	7c5fbb6a-242e-4c02-ae63-e11f2ef5d478	должность	Равно	руководитель отдела персонала
+8b91e22b-2ce4-49b2-bcf6-82c88a033c47	142ef6f8-5ebc-4e76-844d-b9c9f5f37d05	должность	Равно	руководитель отдела персонала
+902089f3-7a4c-4282-8497-36e4e6d5d030	14138194-0861-49fc-b307-f55ed2f485d1	должность	Равно	руководитель отдела персонала
+51d87cad-4de6-456e-b10e-8a81723b8ce5	303b57f7-55a7-485e-a27e-8d77875b5cb4	служба	Равно	служба программного обеспечения
+1471f1c8-662b-4196-bc10-13e350ece082	b85d12b8-c46c-4d96-a959-95462e04320f	служба	Равно	служба программного обеспечения
+d336de96-bc2a-41b9-8644-976f7fcc235f	cbb8deb4-f970-4924-bd76-a459425bf465	служба	Равно	служба программного обеспечения
+1d879ef9-39eb-4a57-a699-4203cf22a6ed	445c64ac-9441-43de-8f7d-ed6ef3e2906e	служба	Равно	служба программного обеспечения
+77b9ed9b-b8ad-427a-9d37-550844042590	be8e20d6-ad89-476e-b897-b43c0908d4a7	служба	Равно	служба программного обеспечения
+bc7a9623-b897-4208-a239-24847fd5f129	67936cef-2222-4d1c-81a0-64c1032105d0	служба	Равно	служба программного обеспечения
+59ef7e97-f378-43c1-9978-a9331f5675c4	b7a4321f-cd47-4c57-97cc-4aa9f4177500	служба	Равно	служба программного обеспечения
+9446b4c3-1d8f-4f7c-9943-746954b89edb	36897b8d-ab53-4169-a60a-14388b47a35c	служба	Равно	служба программного обеспечения
+181a6db9-c930-41fd-8bb2-c53c370ace4b	d13f2323-7376-4940-bcde-1b6be0d7f672	служба	Равно	служба программного обеспечения
+cf9f68bb-8274-4016-864c-d38c3436407e	2c43d76c-0ba9-4564-90e3-249ec676c247	служба	Равно	служба программного обеспечения
+a2cdb321-7041-4204-aa2d-bbfa9fd5cba2	655aedcf-337b-4a13-aebf-eb6b50ece28a	служба	Равно	служба программного обеспечения
+d39eab9b-3483-4af0-8faa-f2d38c1d2978	1429e8fe-1de1-4942-8c89-e098e186022f	служба	Равно	служба программного обеспечения
+49d0cfef-dec4-4261-a801-b0d95c8536c6	93780537-5afe-4d34-a9b1-18fa03ae43d1	служба	Равно	служба программного обеспечения
+466d6a4e-3e3c-4858-abd3-413a15bb80f4	6724d12d-cfbc-4e4d-a1cd-3571fcbe4eb6	ovserver	Равно	observer
+259f440c-0cf9-49f3-abff-5a52a3626c8b	2e3dc86b-abe9-4521-86cd-a45c6c5c20a4	должность	Равно	руководитель отдела персонала
+db39a2a2-0eb3-4d35-9f29-6b28aae72ef1	06a9d2fe-35fd-4786-b665-c0525d134ac9	служба	Равно	служба главных специалистов
+0361b6c7-2283-4673-b89b-0ed3e35d0828	0d607498-db21-4827-804e-c8eba652a4f3	служба	Равно	служба главных специалистов
+75550815-625e-4992-88ad-c50e62fd77fe	cd3ea119-01ea-44aa-a7f3-8ca1158f0329	служба	Равно	служба главных специалистов
+537d5aba-fe6d-4ba8-9c21-3a1fb3d878bb	2637e454-cbc7-43de-ae93-1620eb44833d	служба	Равно	служба главных специалистов
+0e6e2879-64a5-46bb-951b-cf0883ed4879	0d032317-71d0-4eda-93ac-12585b978e53	служба	Равно	служба главных специалистов
+4d509705-77b8-432d-9e9d-4480a643bf31	a41ff9ac-357b-4223-95ce-80e7883022b3	служба	Равно	служба главных специалистов
+9a0dfa02-7c74-452b-a6dd-dcd86b058d12	b212a656-1971-4ebd-8f67-a738f117e09a	служба	Равно	служба главных специалистов
+923106e7-c899-442f-8eb8-d7f8f3b121c0	59f3d8ab-b47d-4da2-bc0d-ab35df9ce219	служба	Равно	служба главных специалистов
+28d1c5a2-96f0-4424-9110-729c63a0f38f	d4052489-7a59-4921-a7ae-8e26b240af9c	служба	Равно	служба главных специалистов
+d7788094-bd2f-4053-b01e-9353aeacf6a6	83adf9eb-9d7f-414a-8814-cb5226c68bab	служба	Равно	служба главных специалистов
+eb8e8355-e609-48a7-89e6-4d7122474e10	ed1ec117-e29f-41f8-b670-fc0dbc975e4a	служба	Равно	служба главных специалистов
+2b6d39a3-b042-48c2-8386-7f475ca68d16	c5690600-5e58-4031-b6cb-63329094b83d	должность	Равно	руководитель отдела персонала
+c7065cdb-d10b-4fdb-86cc-d645f04ac076	916adff4-2184-435d-bbfb-38dc85711ec2	должность	Равно	руководитель отдела персонала
+dc96d7d9-45be-4a30-83ab-dbe863934f64	0e6302fe-e083-4093-8a68-db69d3cfcbe7	должность	Равно	руководитель отдела персонала
+b03580ee-273a-4e90-ba74-320593f629ba	b1c556ea-6a83-44be-a86e-acaeee5169d8			
+29065500-4120-4811-bdb7-f6d97f3464b6	60655194-4f88-430e-9353-cd51c08522a6	null	null	null
+06247246-4dd5-417f-8221-2aea0d186e49	60655194-4f88-430e-9353-cd51c08522a6			
+a900b852-3639-4399-a3c4-a524239bda25	cd2c0d42-2c6e-4834-b7d0-b1ab91c55959	null	null	null
+7a410e97-0e33-4bc2-a4e3-d48344869496	cd2c0d42-2c6e-4834-b7d0-b1ab91c55959	null	null	null
+30735e68-932d-4d64-a449-b0556aefeecc	cd2c0d42-2c6e-4834-b7d0-b1ab91c55959			
+2fa026b6-6306-4fbe-b66d-625136f2dbca	88262df3-b1c5-4b05-8e4f-e3789ec5e6e1	null	null	null
+fa8db1fc-02cc-464c-8a17-5db7e53a4a2d	88262df3-b1c5-4b05-8e4f-e3789ec5e6e1	null	null	null
+1a4dc39a-38cf-42fa-9d02-19c38b74496f	511432c0-136d-4c76-a437-613f1042ac7d	null	null	null
+f405bba7-4fa9-46a9-8b64-320bcedc6c86	318dbf70-1935-469b-8af9-d43df9bba9b3			
+32164174-04fd-45a4-a83d-859d57e99388	50af2cbc-0617-4d51-ae7c-ae22dcbcb185	null	null	null
+3199b10c-2760-464a-bf4e-9351a36b7a61	50af2cbc-0617-4d51-ae7c-ae22dcbcb185			
+d0f4e4f8-b769-4b1f-a801-37fffc8e2c21	71c704b9-0b7d-4104-9fdd-3b13ac1b9faf	null	null	null
+84a47224-abd6-4df8-9c9d-449492fa74e2	f31f2d9e-1da4-4920-96db-ad28cf3a0669			
+6210670c-b647-4ee0-9951-6731789a1b3a	381c9c1e-eb94-4d49-a4f9-83cca7c668ab			
+e2ada584-c0c1-4f5e-b551-2784b77936a6	7fcbc075-4f74-4e19-8359-3b9e6d225338			
+f450d47a-299a-4d41-bf27-330196ef7bfe	998a9159-c96e-4941-85c2-28b2e933ddb7	null	null	null
+cb1006b0-3276-476f-bbf4-21b6497055e3	998a9159-c96e-4941-85c2-28b2e933ddb7			
+e7f70f51-c72e-4250-a40f-8a89ac3d0749	b937a650-e7eb-41d1-a7e7-cf6fe94030e4	null	null	null
+fee744c6-b6c2-4928-8223-208d65fe5e1a	d2f23814-f3f8-4821-ab22-644833c7dac5			
+77eb8f93-fa11-4903-88b5-3b4dc3103d37	b12512e7-345f-45a2-a91d-b896cffcf5e3			
+ccade2d3-5457-4073-8f39-16d24198beb7	4d675e7c-a8b3-418b-9bf7-9d2aedf930be	null	null	null
+7085b69d-4390-4b10-9687-139d188eb15d	4d675e7c-a8b3-418b-9bf7-9d2aedf930be			
+341d4a31-9007-48d6-9bb7-1f28f151b765	265ab6e7-572d-4022-8640-2b59cc345aba			
+e1f28e47-fbc0-424e-a93c-93f53dcb19ef	d117d158-5998-411b-8219-535117cc4e1f			
+74be3237-12b0-4227-a80e-e83280b124a5	9b37fa2e-dc5c-4ee4-93b7-79ba90fe1beb			
+fe88fd30-3496-4353-8ba4-a5cd88553704	69b2c35d-4bf8-4791-9704-ee23d42af2df	null	null	null
+a1e40e22-e040-42b5-9a07-7363b2b43668	69b2c35d-4bf8-4791-9704-ee23d42af2df			
+2c2cd344-0c4a-4bee-b2e9-61f5a4dc80e7	df275831-9711-4ff2-86b5-082800adce9d	null	null	null
+7ab0b7b5-3966-44e1-9771-181d09d4b986	10835d8f-aa8b-4517-b7b4-bb23f8a725e9			
+548f1f16-134e-4af9-a162-8a553e57d2cc	44014e5f-e278-41c9-bcc6-d3282e0df438	null	null	null
+851d9d7e-efb7-4450-9d90-53a5626413eb	44014e5f-e278-41c9-bcc6-d3282e0df438			
+394c93c4-5b0f-43f9-8e30-355731a24648	7eafd6f7-9df8-4904-95dd-419a40fc1fac			
+65de18de-345f-47f4-9d7f-e94ab46fc0ca	b825b78f-49d2-48d6-96dd-23a2b339678e			
+0a708770-21b5-4db1-a14f-a683b5140e8a	b8167bf3-cb2a-4a32-bef3-ade9cf980666			
+b53b56c8-30b8-4fd8-90ae-6802af2d090f	aa6d219c-7a0d-462d-946c-039b53e9fca9			
+a6df4eb9-9a69-46e4-a5b2-8b82a18b8a0e	f21cb41c-e32a-4c0e-b348-2284bf2e5b85	null	null	null
+1198ee74-093f-4e7b-b868-6e372d822d31	e928bb93-c222-432f-ab6b-b31f07a575b8			
+dd23065e-a59a-41c2-9c7d-6fa49f73bd96	49d3b85f-e6a7-428c-bdad-c0c90d9bf41b			
+57a489f1-db9a-415d-98a9-67801a5231cd	873a3436-c3cd-4f52-a891-c95f9acdc738			
+2ec3ed03-2bd9-483c-9ecc-bed9c4357c25	117a7ff8-9672-4a0c-b716-1f3b8b57a3dc			
+66d81aaf-7ca3-4291-938c-6e4c80c22149	b18698d2-017c-46f1-bd0a-a16583ea09bb			
+8dadf51d-4005-468f-ae07-d7128e3079ed	cc4615ca-a245-4b7f-adc4-cc68817ec50d			
+afbd9a06-4be8-4f9c-89e7-869ae07403f0	e37da060-d380-473e-b2f6-9dd1f8786f6e			
+2bbf1ff2-2085-47d8-86d1-03b339676749	d5f05a8d-e06d-40ff-8aaa-02153f89196c			
+da18b62c-d1cd-40d8-86cb-6ee5da721f6d	9bec5a16-be3e-43db-84c2-9993298df0c3			
+3086fe5d-96ea-496f-91e5-e383557c9e4c	3588622e-c714-443a-bf4c-1fa7422244cf			
+778793ad-78d5-4846-a4c0-59575fdb1b87	efbe3f38-b5b8-403d-9b44-506e641c96aa			
+4e7611bf-d8b1-418b-bf89-f58f7f730ce1	b026ba49-870f-4c19-9376-ec1f6d20fa67			
+5630e4fa-0a28-4808-bd17-aa576c261ffa	836b6f92-3eb5-4975-b770-d82b451ca410			
+a7f23106-4760-4622-8d6e-d7f1e70a4879	cd5c3a27-3000-4d44-8923-d18144d8577f			
+1296ec38-39dc-4e40-ad88-df17664f03b7	1ffd787f-3ea8-46e2-b039-1e46569ea33c	город	null	null
+2b410e7b-7fb3-4c41-8a1a-77002262b3c3	1ffd787f-3ea8-46e2-b039-1e46569ea33c			
+c9b28f9e-8b72-43d0-a92c-7714fc40dd9b	3e66a800-bd5c-40a7-a98b-327b3baba756			
+af9d88bc-2100-427e-b99e-a2183855b232	60710817-166d-46c0-8e9a-467d1256f428	должность	null	null
+d9e1c174-6740-4452-a130-90d1830e78d9	60710817-166d-46c0-8e9a-467d1256f428			
+76f6e753-e640-4d9d-8e56-63e342f4b075	145c5ed1-1c3d-4d2c-9fd2-749606a9d301	должность	null	null
+8302d423-0fa2-4552-9b09-ad12d1c544cb	145c5ed1-1c3d-4d2c-9fd2-749606a9d301			
+dc43dbf6-25f6-4648-8597-329d1be659db	d67acc27-8082-4fb8-9b33-2e708a6b6e12			
+310a33f8-30b8-4cd4-9fcd-921d2fd66fa0	ec0c1e30-034a-47a8-9fa7-11d3bb22f6a4	компания	null	null
+6c7dd077-8114-46cf-b2ff-9f5b2f516767	ec0c1e30-034a-47a8-9fa7-11d3bb22f6a4			
+abb9b440-d0c0-4eea-bdd7-f0883e71276e	e4645a59-7ae9-495e-90b1-cae3cf9d1e15			
+dd20be5c-c4ee-498a-af4a-1071907aba0c	cbcd5a1d-21c1-4438-90c7-730bd47996af	компания	null	null
+1975d3f4-f1a6-4a48-b1c1-cc532a089c81	cbcd5a1d-21c1-4438-90c7-730bd47996af			
+0bd02a8e-0055-4391-960e-cbdcbd229c0d	ce30aa00-2862-4bf1-b4f2-224da904eb95	null	null	null
+81ba3630-629d-49c0-81df-691b6f897fd2	ce30aa00-2862-4bf1-b4f2-224da904eb95	должность	null	null
+fb6209bf-cf31-4329-ab41-bdbfcb45f700	ce30aa00-2862-4bf1-b4f2-224da904eb95			
+67de335d-53b6-4323-96b1-fec1ba441e06	6df56e3b-b3bb-4bd6-8c35-66a9b3df289f			
+43e5c465-918a-474a-b251-a2709595a6f6	780a0f22-11e6-4269-ac96-48d9c705ea38	должность	null	null
+15cd2ff9-8084-44ab-8b33-7e0b725b9444	780a0f22-11e6-4269-ac96-48d9c705ea38			
+88d3464a-3527-485e-92f3-f1caa440b6fa	1a5cd19c-6001-4e97-a4c0-d339aea065b8			
+7323db51-b1e4-429c-ab76-af394a265ffb	96b8a030-9d04-452f-8567-e9b1da079d4c	город	null	null
+e7409404-dbae-40db-863c-416616b243b2	96b8a030-9d04-452f-8567-e9b1da079d4c			
+474fbd1d-e1e4-40cc-bf5f-3dac0d3aa2e5	c321f168-30c3-45de-8d48-627f4f728ca2			
+fd3c604e-7001-4c01-9add-87e0fa903efa	a2759314-ee50-40e2-8f13-82dbeceb61ea	должность	null	null
+90f369db-0f18-4cda-9bb7-8dbe55ff44d0	a2759314-ee50-40e2-8f13-82dbeceb61ea			
+e29dd9dd-7128-45a9-86cf-7d2ca62d45ce	b14871dc-f833-4f60-aadb-acf3828233a4	null	null	null
+5df011c5-ec73-47d8-aa95-f22933e49d50	b14871dc-f833-4f60-aadb-acf3828233a4			
+0509999c-21fa-4bc7-bcb4-a77fcdc4e1a8	931f6e78-a349-4b55-b308-fd054004b130			
+f7c1bc8e-489c-45b4-97b8-5c9c069fe370	dd02bf97-a9b8-4712-96b1-fdc88917b72e	компания	null	null
+bc809ca7-649c-47f4-be9a-f83c47f333cb	dd02bf97-a9b8-4712-96b1-fdc88917b72e			
+4146c5e7-46fd-4a57-ab08-36914f881451	db1f26bc-d094-48a5-924b-bd99f06397c2			
+b7c2ef21-fd45-4e58-8273-ac8437337791	3bbec086-8002-4a93-ad74-99f56c55efd6	компания	null	null
+227f8344-9c66-4321-8420-201cc1e86cf1	3bbec086-8002-4a93-ad74-99f56c55efd6			
+788d6b0c-cec0-48f3-ad1f-6242bccf4340	1c0babd3-c5fa-4980-ad29-688407bad6b6			
+54763a30-e603-41cd-9261-37f34ee3714e	a9d351f7-e8bc-4f0a-950c-3a4c5910bf46	город	null	null
+92d57972-4d3a-4092-a806-c7c0b173a01b	a9d351f7-e8bc-4f0a-950c-3a4c5910bf46			
+03fcdea2-3041-40f8-91b0-dbdc992feba1	67151d49-30d7-40fc-9234-a54ec7ee0ca4			
+8f9f9c53-a101-4c4d-a976-947d887a8ba3	b1a96286-7440-46f5-a76b-2829ecfb5e40			
+60275088-0917-4430-ac19-fffeb5aba10f	8d48457a-556a-4732-ba37-4a5af657abeb	должность	null	null
+7d4009e0-3684-4e0c-9310-efcdfb292fcb	8d48457a-556a-4732-ba37-4a5af657abeb			
+5bad0b63-ad3c-49d2-b336-5a4454e72434	fe530510-12d7-405d-be57-2307f7ce9a18			
+c2b77b0b-ecc4-48f9-9ad9-e7ceba194351	2d439357-f36b-4bad-b97a-4d32d6cd9d8c			
+ea462973-341a-486c-bae6-42e441581fd0	7c583a29-31e6-436c-b404-a48d77791f3b			
+7100a64f-7fd6-4f62-879f-d7ae066d1a83	1ce5dda8-ba90-4753-b4b4-67985374f8b9			
+042744d6-16f0-478a-9fda-080065e7317a	35afc337-3906-462f-8d4d-fb0b7c0e7698	служба	null	null
+becfcdcf-3b70-4cee-8479-4539b34666cf	35afc337-3906-462f-8d4d-fb0b7c0e7698			
+79d68a9e-b306-42f1-8112-9ac5fc0ffeb0	3d4707ce-7d4a-4f8d-89be-47a2e65f4be3			
+94b9a630-c8a1-4ed4-a5e0-7daa77d8c68b	76893659-06b2-42e8-828a-edadb0fcfeee	служба	null	null
+2d2fa54c-b85c-4ee0-9af6-fd92706cf0d5	76893659-06b2-42e8-828a-edadb0fcfeee			
+67712de3-8c58-4586-bda9-98cfe35dddc1	93b0d21a-1e63-4e8b-b921-319e3440b45e	null	null	null
+4df43511-168f-4c61-81b5-60bfad2ff33d	93b0d21a-1e63-4e8b-b921-319e3440b45e	служба	null	null
+32df0677-91ec-460b-b239-3c5f4ee431d5	93b0d21a-1e63-4e8b-b921-319e3440b45e			
+5351ace5-1637-4ae2-b67e-667edb80cd40	11f86cc0-a94e-4896-b495-0253e67318fd			
+2e291696-2edb-494e-95f5-25fbdc2c3cfd	e05deeaa-e722-4ecb-a4e8-f4c17efad831			
+6ebe8045-6cd4-4541-b1e3-be2b2c566895	26ac7924-e44a-48c2-bc4e-aed5fbd394cf			
+43fc6922-32ae-43be-91ae-08a404baf0c1	490d76bd-cade-4d1c-8230-ad0e6130b536	null	null	null
+e7b9b786-f150-457c-b65c-1e6fd639e985	490d76bd-cade-4d1c-8230-ad0e6130b536			
+04b7a6ff-b321-422d-92f7-03bea3bc40c1	80647c25-9e8a-4530-be17-f992d19171b7			
+96c82057-b987-46b6-b7dc-08edf6478687	e1a4c99d-9f52-4138-8954-3e270aff2ff2	null	null	null
+5d7746ae-bdf5-47e1-911e-5b47af6a9d35	e1a4c99d-9f52-4138-8954-3e270aff2ff2			
+ee3d86f0-121f-461c-bebc-326be5a68810	03620a1d-d830-487e-aa6c-a27071497290			
+5d151f45-615c-4d24-a635-94e5956d811c	c9f9653c-100e-4b47-98fd-19a1933c28e3			
+65a97882-9063-4cea-98e9-16f2fdaa8636	c49742dc-ee03-484a-8cb0-77a8760586a9			
+bc8b11a8-0391-4a44-8493-78d83ba7066b	b2cde1aa-4e8e-4b2a-92a6-8ebde623fdee			
+01470e04-acc8-45ba-9b1c-5dd6ce695fc3	58f14838-197b-4fa8-87e2-fd23162d437b			
+0c9c073c-de86-423a-a002-1d5c1ee22a93	a0a39f5f-223b-42d9-a6d1-f5c6cc9113a6			
+8bd716a3-6ce0-4b7c-a389-eafcefb13a9e	a6f6c38d-761b-4e7b-b199-5a30cb1dc4b7			
+675a48e5-ac3d-48d3-a993-75b915b9cdba	2dbd065e-ccd3-4860-9fae-2f08070b3a71			
+8a7baaf8-6f73-410a-a492-a20ee5a4482b	f1bfe8dc-1fbd-470e-93f1-3246d219b043	null	null	null
+91c7cbe0-042f-4335-94a0-cb017a6189e6	f1bfe8dc-1fbd-470e-93f1-3246d219b043			
+\.
+
+
+--
+-- Name: rule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: auth
+--
+
+SELECT pg_catalog.setval('public.rule_id_seq', 529, true);
+
+
+--
+-- Name: user_role_mapping PK_348601cc22ff9c15713ce890537; Type: CONSTRAINT; Schema: public; Owner: auth
+--
+
+ALTER TABLE ONLY public.user_role_mapping
+    ADD CONSTRAINT "PK_348601cc22ff9c15713ce890537" PRIMARY KEY (role_id, user_id);
+
+
+--
+-- Name: user_rule PK_5cac7ac855c7e10db6675d83673; Type: CONSTRAINT; Schema: public; Owner: auth
+--
+
+ALTER TABLE ONLY public.user_rule
+    ADD CONSTRAINT "PK_5cac7ac855c7e10db6675d83673" PRIMARY KEY (uid);
+
+
+--
+-- Name: keycloak_role PK_6c7c63e73cade7134af78f8e085; Type: CONSTRAINT; Schema: public; Owner: auth
+--
+
+ALTER TABLE ONLY public.keycloak_role
+    ADD CONSTRAINT "PK_6c7c63e73cade7134af78f8e085" PRIMARY KEY (id);
+
+
+--
+-- Name: resource_rule PK_7108ea587a5cab8d987773fb86d; Type: CONSTRAINT; Schema: public; Owner: auth
+--
+
+ALTER TABLE ONLY public.resource_rule
+    ADD CONSTRAINT "PK_7108ea587a5cab8d987773fb86d" PRIMARY KEY (uid);
+
+
+--
+-- Name: rule PK_a5577f464213af7ffbe866e3cb5; Type: CONSTRAINT; Schema: public; Owner: auth
+--
+
+ALTER TABLE ONLY public.rule
+    ADD CONSTRAINT "PK_a5577f464213af7ffbe866e3cb5" PRIMARY KEY (id);
+
+
+--
+-- Name: user_group_membership PK_aa092bfd6f3c7708eee20f59d54; Type: CONSTRAINT; Schema: public; Owner: auth
+--
+
+ALTER TABLE ONLY public.user_group_membership
+    ADD CONSTRAINT "PK_aa092bfd6f3c7708eee20f59d54" PRIMARY KEY (group_id, user_id);
+
+
+--
+-- Name: user_entity PK_b54f8ea623b17094db7667d8206; Type: CONSTRAINT; Schema: public; Owner: auth
+--
+
+ALTER TABLE ONLY public.user_entity
+    ADD CONSTRAINT "PK_b54f8ea623b17094db7667d8206" PRIMARY KEY (id);
+
+
+--
+-- Name: group_attribute PK_dbc128733f926fe66f7726b99e4; Type: CONSTRAINT; Schema: public; Owner: auth
+--
+
+ALTER TABLE ONLY public.group_attribute
+    ADD CONSTRAINT "PK_dbc128733f926fe66f7726b99e4" PRIMARY KEY (id);
+
+
+--
+-- Name: microservice PK_e3e2d72b39995da035c058fd790; Type: CONSTRAINT; Schema: public; Owner: auth
+--
+
+ALTER TABLE ONLY public.microservice
+    ADD CONSTRAINT "PK_e3e2d72b39995da035c058fd790" PRIMARY KEY (uid);
+
+
+--
+-- Name: resource PK_e6349ecf05ea1e0a1c6ddba88d6; Type: CONSTRAINT; Schema: public; Owner: auth
+--
+
+ALTER TABLE ONLY public.resource
+    ADD CONSTRAINT "PK_e6349ecf05ea1e0a1c6ddba88d6" PRIMARY KEY (uid);
+
+
+--
+-- Name: rule UQ_6c3342a255b89c0903e262145d0; Type: CONSTRAINT; Schema: public; Owner: auth
+--
+
+ALTER TABLE ONLY public.rule
+    ADD CONSTRAINT "UQ_6c3342a255b89c0903e262145d0" UNIQUE (uid);
+
+
+--
+-- Name: resource UQ_c8ed18ff47475e2c4a7bf59daa0; Type: CONSTRAINT; Schema: public; Owner: auth
+--
+
+ALTER TABLE ONLY public.resource
+    ADD CONSTRAINT "UQ_c8ed18ff47475e2c4a7bf59daa0" UNIQUE (name);
+
+
+--
+-- Name: kc_sub; Type: SUBSCRIPTION; Schema: -; Owner: auth
+--
+
+CREATE SUBSCRIPTION kc_sub CONNECTION 'host=10.11.11.5 port=5432 user=keycloak dbname=keycloak connect_timeout=10 password=keycloak sslmode=prefer' PUBLICATION keycloak_pub WITH (connect = false, slot_name = 'kc_sub');
+
+
+ALTER SUBSCRIPTION kc_sub OWNER TO auth;
+
+--
+-- PostgreSQL database dump complete
+--
+

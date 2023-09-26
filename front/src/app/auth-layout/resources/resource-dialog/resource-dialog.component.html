@@ -1,0 +1,90 @@
+<div class="resource">
+    <div class="resource__main-info">
+        <div class="header">
+            <span class="header-title">Основная информация</span>
+            <span class="material-symbols-outlined" (click)="closeDialog()" style="cursor: pointer;">
+                close
+            </span>
+        </div>
+        <div class="body">
+            <div class="field">
+                <div class="field">
+                    <span class="field-name">
+                        Ресурс:
+                    </span>
+                    <span class="field-value">
+                        {{resource.name}}
+                    </span>
+                </div>
+                <div class="field">
+                    <span class="field-name">
+                        Микросервис:
+                    </span>
+                    <span class="field-value">
+                        {{resource.microservice_name}}
+                    </span>
+                </div>
+            </div>
+            <form [formGroup]="resourceUpdateForm" (ngSubmit)="updateResource()" *ngIf="resourceUpdateForm">
+                <div class="field">
+                    <span class="field-name">
+                        Наименование:
+                    </span>
+                    <input class="custom-form-control form-control" formControlName="alias" />
+                </div>
+                <div class="field">
+                    <span class="field-name">
+                        Описание:
+                    </span>
+                    <textarea class="custom-form-control form-control" formControlName="description"></textarea>
+                </div>
+                <button class="custom-button" type="submit">Сохранить</button>
+            </form>
+        </div>
+    </div>
+    <div class="resource__attributes">
+        <div class="header">
+            <span class="header-title">Атрибуты</span>
+        </div>
+        <div class="table">
+            <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
+                <form [formGroup]="updateAttributeForm" (ngSubmit)="updateAttribute()" *ngIf="updateAttributeForm">
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name">
+                            Атрибут</th>
+                        <td mat-cell *matCellDef="let attribute; let i = index"> {{attribute.name}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="alias">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by alias">
+                            Наименование</th>
+                        <td mat-cell *matCellDef="let attribute; let i = index">
+                            <input *ngIf="rowToEdit == i" class="form-control" formControlName="alias" />
+                            <span *ngIf="rowToEdit != i"> {{attribute.alias}}</span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="description">
+                        <th mat-header-cell *matHeaderCellDef>Описание</th>
+                        <td mat-cell *matCellDef="let attribute; let i = index">
+                            <input *ngIf="rowToEdit == i" class="form-control" formControlName="description" />
+                            <span *ngIf="rowToEdit != i">{{attribute.description}}</span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="button">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let attribute; let i = index">
+                            <span class="material-symbols-outlined" (click)="editAttribute(i)" style="cursor: pointer;">
+                                edit
+                            </span>
+                            <span class="material-symbols-outlined" (click)="updateAttribute()" *ngIf="rowToEdit == i"
+                                style="cursor: pointer;">
+                                done
+                            </span>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                    <tr class="example-element-row" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </form>
+            </table>
+        </div>
+    </div>
+</div>

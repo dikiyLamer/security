@@ -1,0 +1,40 @@
+<div class="all">
+
+  <!--    <app-microservice-popup *ngIf="createButtonClicked" (onCancelPopup)="createButtonClicked = false" [serviceToEdit]="serviceToEdit"-->
+  <!--    (onPopupDataUpdate)="onSubmitPopupUpdate($event)" (onPopupDataCreate)="onSubmitPopupCreate($event)"></app-microservice-popup>-->
+      <button mat-stroked-button class="stroked-button" (click)="openDialog()">Создать микросервис</button>
+      <div class="microserviceList" >
+          <div class="table">
+            <table mat-table [dataSource]="microservices" >
+              <ng-container matColumnDef="uid">
+                <th mat-header-cell *matHeaderCellDef> uid </th>
+                <td mat-cell *matCellDef="let microservice"> {{microservice.uid}} </td>
+              </ng-container>
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> name </th>
+                <td mat-cell *matCellDef="let microservice"> {{microservice.name}} </td>
+              </ng-container>
+              <ng-container matColumnDef="route">
+                <th mat-header-cell *matHeaderCellDef> route </th>
+                <td mat-cell *matCellDef="let microservice"> {{microservice.route}} </td>
+              </ng-container>
+              <ng-container matColumnDef="port">
+                <th mat-header-cell *matHeaderCellDef> action </th>
+                <td mat-cell *matCellDef="let microservice">
+                  <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="delete" class="microserice_action_icon" (click)="deleteMicroservice(microservice)"></mat-icon>
+                  <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="sync_alt" class="microserice_action_icon" (click)="synchronizeMicroservice(microservice)"></mat-icon>
+                  <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="edit" class="microserice_action_icon" (click)="openDialog(microservice)">
+                  </mat-icon>
+  
+  
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr class="example-element-row" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  
+            </table>
+          </div>
+      </div>
+  
+  </div>
+  

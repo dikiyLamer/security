@@ -1,0 +1,62 @@
+<div class="auth-resources">
+  <div class="auth-resources__header">
+    <div class="header__filter-search">
+      <span class="material-symbols-outlined"
+        style="display:flex; align-items: center; margin-left: 15px; cursor: pointer;" (click)="resetFilters()">
+        filter_alt_off
+      </span>
+      <input type="text" class="form-control" (keyup)="applyFilter($any($event.target).value)"
+        placeholder="Искать в таблице">
+    </div>
+  </div>
+  <div class="auth-resources__body">
+    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="heading" style="display: flex; align-items: center;">
+            <span mat-sort-header sortActionDescription="Sort by name">Ресурс</span>
+            <span class="material-symbols-outlined" (click)="filterDropdown.toggleDropdown()" style="cursor: pointer;">
+              filter_alt
+              <app-filter-dropdown #filterDropdown [column]="'name'"
+                (applyFilter)="applyFilter($event.filterValue, $event.column, $event.filterType)"
+                (filterOpened)="closeOtherDropdowns($event)"></app-filter-dropdown>
+            </span>
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let resource"> {{resource.name}} </td>
+      </ng-container>
+      <ng-container matColumnDef="alias">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="heading" style="display: flex; align-items: center;">
+            <span mat-sort-header sortActionDescription="Sort by alias">Наименование</span>
+            <span class="material-symbols-outlined" (click)="filterDropdown.toggleDropdown()" style="cursor: pointer;">
+              filter_alt
+              <app-filter-dropdown #filterDropdown [column]="'alias'"
+                (applyFilter)="applyFilter($event.filterValue, $event.column, $event.filterType)"
+                (filterOpened)="closeOtherDropdowns($event)"></app-filter-dropdown>
+            </span>
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let resource"> {{resource.alias}} </td>
+      </ng-container>
+      <ng-container matColumnDef="microservice_name">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="heading" style="display: flex; align-items: center;">
+            <span mat-sort-header sortActionDescription="Sort by microservice_name">Микросервис</span>
+            <span class="material-symbols-outlined" (click)="filterDropdown.toggleDropdown()" style="cursor: pointer;">
+              filter_alt
+              <app-filter-dropdown #filterDropdown [column]="'microservice_name'"
+                (applyFilter)="applyFilter($event.filterValue, $event.column, $event.filterType)"
+                (filterOpened)="closeOtherDropdowns($event)"></app-filter-dropdown>
+            </span>
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let resource"> {{resource.microservice_name}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr class="example-element-row" mat-row *matRowDef="let row; columns: displayedColumns;"
+        (click)="rowClicked(row)"></tr>
+    </table>
+  </div>
+</div>

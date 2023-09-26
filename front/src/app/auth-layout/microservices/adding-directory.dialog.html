@@ -1,0 +1,21 @@
+<div mat-dialog-content style="width: 300px">
+    <div style="display: flex; justify-content: space-between">
+      <p>Микросервис</p>
+      <span class="material-symbols-outlined" style="cursor: pointer" (click)="onNoClick()">
+      close
+    </span>
+    </div>
+    <mat-form-field style="width: 100%">
+      <mat-label>Название микросервиса</mat-label>
+      <input matInput [(ngModel)]="data.name">
+    </mat-form-field><br>
+    <mat-form-field style="width: 100%">
+      <mat-label>Путь</mat-label>
+      <input matInput [(ngModel)]="data.path">
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Отмена</button>
+    <button mat-button [mat-dialog-close]="data" cdkFocusInitial>ОК</button>
+  </div>
+  

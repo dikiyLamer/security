@@ -1,0 +1,14 @@
+<div class="filter-dropdown" *ngIf="openDropdown"
+[ngStyle]="{'right': isLast ? '18px' : 'auto'}">
+  <div class="filter-content">
+    <select class="select-control" #filterSelect (click)="$event.stopPropagation()" (change)="onFilterTypeChange($any($event.target).value)">
+      <option value="contains">Содержит</option>
+      <option value="notContains">Не содержит</option>
+      <option value="startsWith">Начинается с</option>
+      <option value="endsWith">Заканчивается на</option>
+      <option value="equals">Равно</option>
+      <option value="notEquals">Не равно</option>
+    </select>
+    <input class="form-control" (click)="$event.stopPropagation()" (keyup)="onFilterInput($event)" placeholder="Значение фильтра">
+  </div>
+</div>

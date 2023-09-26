@@ -1,0 +1,129 @@
+<div class="wrapper">
+  <div class="resource-change">
+    <button mat-stroked-button class="stroked-button" (click)=" filtersInvisible = !filtersInvisible;" id="filterButton">Фильтры</button>
+    
+    <div appFilter  [invisible]="filtersInvisible"  class="filters" (ev)="filtersInvisible = true;" >
+      <select class="form-control" (change)="changeMicroserviceFilter($event)" id="selectType" #msUid>
+        <option value="" disabled selected>Выбрать микросервис</option>
+        <option *ngFor="let val of arrayMicroservices" [value]="val.uid">{{val.name}}</option>
+      </select>
+      <select class="form-control" id="selectType" #resUid (change)="changeDataInTable()">
+        <option value="" disabled selected>Выбрать ресурс</option>
+        <option *ngFor="let val of arrayResources" [value]="val.uid">{{val.name}}</option>
+      </select>
+    </div>
+
+    <button mat-stroked-button class="stroked-button" routerLink="createRules">Создать правило (данные)</button>
+    <button mat-stroked-button class="stroked-button" routerLink="createRulesForFields">Создать правило (поля)</button>
+
+
+  </div>
+  <div class="table-block">
+    <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+      <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns">
+        <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+        <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+      </ng-container>
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>action</th>
+        <td mat-cell *matCellDef="let row"> <mat-icon aria-hidden="false" aria-label="Example home icon"
+                                                      fontIcon="delete" (click)="$event.stopPropagation(); onClickDelete(row)"
+                                                      class="microserice_action_icon"></mat-icon></td>
+      </ng-container>
+      <ng-container matColumnDef="expand">
+        <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+            <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+            <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+          <div class="example-element-detail"
+               [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+            <div class="element-detail-wrapper" *ngIf="isRuleRowType">
+              <div class="list-of-blocks">
+                <h2>Ресурсы</h2>
+                <div class="element-detail-block" *ngFor="let resource of resources">
+                  <p><span>Атрибут:</span>{{ resource.attribute }}</p>
+                  <p><span>Оператор:</span>{{ resource.operator }}</p>
+                  <p><span>Ресурс:</span>{{ resource.name }}</p>
+                  <p><span>Микросервис:</span>{{ resource.microservice }}</p>
+                  <p><span>Значение:</span>{{ resource.value }}</p>
+                </div>
+              </div>
+              <div class="list-of-blocks">
+                <h2>Пользователи</h2>
+                <div class="element-detail-block" *ngFor="let user of users">
+                  <p><span>Атрибут:</span>{{ user.attribute }}</p>
+                  <p><span>Оператор:</span>{{ user.operator }}</p>
+                  <p><span>Значение:</span>{{ user.value }}</p>
+                </div>
+              </div>
+              <div class="list-of-blocks">
+                <h2>Редактирование</h2>
+                <div class="element-detail-block">
+                  <form *ngIf="expandedElement === element" [formGroup]="formChanges" (ngSubmit)="changeRule()">
+                    <div>
+                      <label for="inputNum" class="form-label">Название</label>
+                      <input class="form-control" id="inputNum" formControlName="name">
+                    </div>
+                    <div>
+                      <label for="inputName" class="form-label">Описание</label>
+                      <input class="form-control" id="inputName" formControlName="description">
+                    </div>
+                    <button type="submit" mat-stroked-button>Сохранить</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="element-detail-wrapper" *ngIf="!isRuleRowType">
+              <div class="list-of-blocks">
+                <h2>Ресурсы</h2>
+                <div class="element-detail-block" *ngFor="let resource of resources">
+                  <p><span>Ресурс:</span>{{ resource.name }}</p>
+                  <p><span>Микросервис:</span>{{ resource.microservice }}</p>
+                  <p><span>Столбцы:</span>{{ resource.columns }}</p>
+                </div>
+              </div>
+              <div class="list-of-blocks">
+                <h2>Пользователи</h2>
+                <div class="element-detail-block" *ngFor="let user of users">
+                  <p><span>Атрибут:</span>{{ user.attribute }}</p>
+                  <p><span>Оператор:</span>{{ user.operator }}</p>
+                  <p><span>Значение:</span>{{ user.value }}</p>
+                </div>
+              </div>
+              <div class="list-of-blocks">
+                <h2>Редактирование</h2>
+                <div class="element-detail-block">
+                  <form *ngIf="expandedElement === element" [formGroup]="formChanges" (ngSubmit)="changeRule()">
+                    <div>
+                      <label for="inputNum" class="form-label">Название</label>
+                      <input class="form-control" id="inputNum" formControlName="name">
+                    </div>
+                    <div>
+                      <label for="inputName" class="form-label">Описание</label>
+                      <input class="form-control" id="inputName" formControlName="description">
+                    </div>
+                    <button type="submit" mat-stroked-button>Сохранить</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+      <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
+          class="example-element-row"
+          [class.example-expanded-row]="expandedElement === element"
+          (click)="onClickToRow(element); expandedElement = expandedElement === element ? null : element">
+      </tr>
+      <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+    </table>
+  </div>

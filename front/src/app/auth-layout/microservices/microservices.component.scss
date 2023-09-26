@@ -1,0 +1,86 @@
+/*-------------variables---------------*/
+
+$border: 1px solid rgba(0, 0, 0, 0.1);
+$outer-margin: 15px;
+$border-radius: 10px;
+
+/*-------------nulling---------------*/
+
+* {padding: 0; margin: 0; border: 0;}
+
+*,*:before, *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+:focus, :active{outline: none;}
+a:focus, a:active{outline: none;}
+
+nav, footer, header, aside {display: block;}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-size: 100%;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+button{cursor: pointer}
+button::-moz-focus-inner {padding: 0; border: 0}
+a, a:visited{text-decoration: none}
+a:hover{text-decoration: none}
+ul li{list-style-type: none}
+img{vertical-align: top}
+
+h1,h2,h3,h4,h5,h6 {font-size: inherit; font-weight: 400;}
+
+/*-------------table styles---------------*/
+
+table {
+  width: 100%;
+}
+
+tr.example-detail-row {
+  height: 0;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.example-element-row:not(.example-expanded-row):active {
+  background: #efefef;
+}
+
+.example-element-row td {
+  border-bottom-width: $border;
+}
+
+/*-------------styling---------------*/
+
+.table {
+  width: 100%;
+  height: calc(100vh - 197px);
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  overflow: auto;
+  th {
+    border-bottom: $border;
+    border-top: $border;
+  }
+  td {
+    border-bottom: $border;
+  }
+}
+
+.stroked-button {
+  margin-left: 50px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border: $border;
+}
